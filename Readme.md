@@ -1,7 +1,7 @@
 # Личный проект «Код и Магия» [![Build status][travis-image]][travis-url] [![Dependency status][dependency-image]][dependency-url]
 
 * Студент: [Михаил Амирджанян](https://up.htmlacademy.ru/javascript/4/user/61866).
-* Наставник: `Неизвестно`.
+* Наставник: `Наталья Ёркина`.
 
 ---
 
