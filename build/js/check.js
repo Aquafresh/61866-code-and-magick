@@ -1,83 +1,47 @@
 
 function getMessage(a,b){
 
-	var typeA = typeof(a);
-	var typeB = typeof(b);
+	if (typeof(a) === 'boolean') {
 
-	if (typeA === 'boolean') {
+		if(a) {
 
-		if(a === true) {
-
-			console.log(a);
-
-			var hitArea = 'Я попал в ' + b;
-
-			return hitArea;
+			return 'Я попал в ' + b;
 		}
 
 		else {
 
-			console.log(a);
-
-			var hitMiss = 'Я никуда не попал';
-
-			return hitMiss;
+			return 'Я никуда не попал';
 		}
 	}
 
-	// else if (typeA === 'boolean' && a === false){
+	else if (typeof(a) === 'number'){
 
-	// 	var hitMiss = 'Я никуда не попал';
-
-	// 	return hitMiss;
-	// }
-
-	else if (typeA == 'number'){
-
-		console.log(typeA);
-
-		var msgJumpCount = 'Я прыгнул на ' + (a * 100) + ' сантиметров';
-
-		return msgJumpCount;
+		return 'Я прыгнул на ' + (a * 100) + ' сантиметров';
 	}
 
-	else if (typeA === 'object' && typeB !== 'object'){
+	else if (Array.isArray(a) && !Array.isArray(b)){
 
-		console.log(typeA);
-		console.log(typeB);
+		var sum = a.reduce(function(sum, current) {
 
-		for( var i = 0; i < a.length; i++) {
+			return sum + current;
 
-			var sum = a.reduce(function(sum, current) {
+		});
 
-				return sum + current;
-
-			});
-		}
-
-		var msgStepCount = 'Я прошёл ' + sum + ' шагов';
-
-		return msgStepCount;
+		return 'Я прошёл ' + sum + ' шагов';
 	}
 
-	else if (typeA === 'object' && typeB === 'object') {
+	else if (Array.isArray(a) && Array.isArray(b)) {
 
-		var newArrSum = [];
+		var sumArrayA = a.reduce(function(sum, current) {
+			return sum + current;
+		});
 
-		for( var i = 0; i < a.length; i++) {
+		var sumArrayB = b.reduce(function(sum, current) {
+			return sum + current;
+		});
 
-			var multiplyItem = a[i] * b[i];
+		var globalSum = sumArrayA + sumArrayB;
 
-			newArrSum.push(multiplyItem);
-
-			var sumItem = newArrSum.reduce(function(sum, current) {
-
-				return sum + current;
-			});
-		}
-
-		var msgLenght = 'Я прошёл ' + sumItem + ' метров';
-
-		return msgLenght;
+		return 'Я прошёл ' + globalSum + ' метров';
 	}
 }
