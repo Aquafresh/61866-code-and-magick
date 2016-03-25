@@ -44,4 +44,10 @@ function getMessage(a,b){
 
 		return 'Я прошёл ' + globalSum + ' метров';
 	}
+
+
+	else{
+
+		return 'Что-то пошло не так';
+	}
 }
