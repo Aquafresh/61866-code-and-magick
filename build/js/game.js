@@ -374,22 +374,37 @@
       }
     },
 
+
+
     /**
      * Отрисовка экрана паузы.
      */
     _drawPauseScreen: function() {
       switch (this.state.currentStatus) {
         case Verdict.WIN:
-          console.log('you have won!');
+          var text = 'Вы выиграли! Поздравляю!';
+          messageCanvasBar(text);
           break;
+
         case Verdict.FAIL:
-          console.log('you have failed!');
+
+          text = 'Вы проиграли! Попробуйте еще.';
+
+          messageCanvasBar(text);
           break;
+
         case Verdict.PAUSE:
-          console.log('game is on pause!');
+
+          text = 'Игра находится на паузе. Чтобы снять её нажмите Space.';
+          messageCanvasBar(text);
           break;
+
         case Verdict.INTRO:
-          console.log('welcome to the game! Press Space to start');
+
+          text = 'Добро прожаловать! Для начала игры нажмите Space. ';
+
+
+          messageCanvasBar(text);
           break;
       }
     },
@@ -684,4 +699,70 @@
   var game = new Game(document.querySelector('.demo'));
   game.initializeLevelAndStart();
   game.setGameStatus(window.Game.Verdict.INTRO);
+
+  // Функция для вывода сообщений
+  // ----------------------------
+  function messageCanvasBar(text) {
+
+    var canvas = document.querySelector('.demo canvas');
+    var ctx = canvas.getContext('2d');
+
+    // Тут идет отрисовка тени многоугольника
+    ctx.strokeStyle = 'rgba(0, 0, 0, 0.7)';
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+    ctx.beginPath();
+    ctx.moveTo(300, 60);
+    ctx.lineTo(550, 60);
+    ctx.lineTo(520, 160);
+    ctx.lineTo(270, 160);
+    ctx.lineTo(300, 60);
+    ctx.stroke();
+    ctx.fill();
+    ctx.closePath();
+
+    // Тут идет отрисовка многоугольника
+    ctx.strokeStyle = '#ffffff';
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath();
+    ctx.moveTo(290, 50);
+    ctx.lineTo(540, 50);
+    ctx.lineTo(510, 150);
+    ctx.lineTo(260, 150);
+    ctx.lineTo(290, 50);
+    ctx.stroke();
+    ctx.fill('evenodd');
+    ctx.closePath();
+
+    // Тут описывается текст на canvas
+    ctx.fillStyle = '#000000';
+    ctx.font = '16px Mono';
+    ctx.textBaseline = 'bottom';
+
+    // Тут идет проверка переноса текста
+    var maxTextWidth = 200;
+    var lineHeight = 25;
+    var offsetLeft = 295;
+    var marginTop = 75;
+    var words = text.split(' ');
+    var countWords = words.length;
+    var line = '';
+
+    for (var i = 0; i < countWords; i++) {
+
+      var testLine = line + words[i] + ' ';
+      var currentTextWidth = ctx.measureText(testLine).width;
+
+      if (currentTextWidth > maxTextWidth) {
+        ctx.fillText(line, offsetLeft, marginTop);
+        line = words[i] + ' ';
+        marginTop += lineHeight;
+      } else {
+        line = testLine;
+      }
+    }
+
+    ctx.fillText(line, offsetLeft, marginTop);
+  }
+  // ----------------------------
+
 })();
