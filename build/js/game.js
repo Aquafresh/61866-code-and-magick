@@ -382,29 +382,20 @@
     _drawPauseScreen: function() {
       switch (this.state.currentStatus) {
         case Verdict.WIN:
-          var text = 'Вы выиграли! Поздравляю!';
-          messageCanvasBar(text);
+          var text = 'Вы выиграли! Поздравляю! Может быть еще? ';
+          drowMessageContainer(text);
           break;
-
         case Verdict.FAIL:
-
           text = 'Вы проиграли! Попробуйте еще.';
-
-          messageCanvasBar(text);
+          drowMessageContainer(text);
           break;
-
         case Verdict.PAUSE:
-
           text = 'Игра находится на паузе. Чтобы снять её нажмите Space.';
-          messageCanvasBar(text);
+          drowMessageContainer(text);
           break;
-
         case Verdict.INTRO:
-
-          text = 'Добро прожаловать! Для начала игры нажмите Space. ';
-
-
-          messageCanvasBar(text);
+          text = 'Добро прожаловать! Для начала игры нажмите Space.';
+          drowMessageContainer(text);
           break;
       }
     },
@@ -700,22 +691,71 @@
   game.initializeLevelAndStart();
   game.setGameStatus(window.Game.Verdict.INTRO);
 
-  // Функция для вывода сообщений
-  // ----------------------------
-  function messageCanvasBar(text) {
+  function drowMessageText(text) {
 
     var canvas = document.querySelector('.demo canvas');
     var ctx = canvas.getContext('2d');
+
+    // Тут описывается текст на canvas
+    ctx.fillStyle = '#000000';
+    ctx.font = '16px PT Mono';
+    ctx.textBaseline = 'bottom';
+
+    // Тут идет проверка переноса текста
+    var maxTextWidth = 200;
+    var lineHeight = 25;
+    var offsetLeft = 305;
+    var marginTop = 75;
+    var words = text.split(' ');
+    var countWords = words.length;
+    var line = '';
+
+    for (var i = 0; i < countWords; i++) {
+
+      var textLine = line + words[i];
+      var currentTextWidth = ctx.measureText(textLine).width;
+
+      if (currentTextWidth > maxTextWidth) {
+        ctx.fillText(line, offsetLeft, marginTop);
+        line = words[i] + ' ';
+        marginTop += lineHeight;
+
+      } else {
+        line = textLine;
+      }
+    }
+
+    ctx.fillText(line, offsetLeft, marginTop);
+
+    return marginTop;
+  }
+
+  function drowMessageContainer(text) {
+
+    var canvas = document.querySelector('.demo canvas');
+    var ctx = canvas.getContext('2d');
+    var lineCount = drowMessageText(text) + 10;
+
+    function getRandomNumber(min, max) {
+
+      return Math.random() * (max - min) + min;
+    }
+
+    // Набор рандомных значений для каждого угла
+    var randomRightTopNumber = getRandomNumber(510, 580);
+    var randomRightBottomNumber = getRandomNumber(480, 590);
+    var randomleftBottomNumber = getRandomNumber(240, 280);
+    var randomleftTopNumber = getRandomNumber(270, 320);
 
     // Тут идет отрисовка тени многоугольника
     ctx.strokeStyle = 'rgba(0, 0, 0, 0.7)';
     ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
     ctx.beginPath();
-    ctx.moveTo(300, 60);
-    ctx.lineTo(550, 60);
-    ctx.lineTo(520, 160);
-    ctx.lineTo(270, 160);
-    ctx.lineTo(300, 60);
+    ctx.moveTo(randomRightTopNumber + 10, 60);
+    ctx.lineTo(randomRightTopNumber + 10, 60);
+    ctx.lineTo(randomRightBottomNumber + 10, lineCount + 10);
+    ctx.lineTo(randomleftBottomNumber + 10, lineCount + 10);
+    ctx.lineTo(randomleftTopNumber + 10, 60);
     ctx.stroke();
     ctx.fill();
     ctx.closePath();
@@ -724,45 +764,16 @@
     ctx.strokeStyle = '#ffffff';
     ctx.fillStyle = '#ffffff';
     ctx.beginPath();
-    ctx.moveTo(290, 50);
-    ctx.lineTo(540, 50);
-    ctx.lineTo(510, 150);
-    ctx.lineTo(260, 150);
-    ctx.lineTo(290, 50);
+    ctx.moveTo(randomleftTopNumber, 50);
+    ctx.lineTo(randomRightTopNumber, 50);
+    ctx.lineTo(randomRightBottomNumber, lineCount);
+    ctx.lineTo(randomleftBottomNumber, lineCount);
+    ctx.lineTo(randomleftTopNumber, 50);
     ctx.stroke();
-    ctx.fill('evenodd');
+    ctx.fill();
     ctx.closePath();
 
-    // Тут описывается текст на canvas
-    ctx.fillStyle = '#000000';
-    ctx.font = '16px Mono';
-    ctx.textBaseline = 'bottom';
-
-    // Тут идет проверка переноса текста
-    var maxTextWidth = 200;
-    var lineHeight = 25;
-    var offsetLeft = 295;
-    var marginTop = 75;
-    var words = text.split(' ');
-    var countWords = words.length;
-    var line = '';
-
-    for (var i = 0; i < countWords; i++) {
-
-      var testLine = line + words[i] + ' ';
-      var currentTextWidth = ctx.measureText(testLine).width;
-
-      if (currentTextWidth > maxTextWidth) {
-        ctx.fillText(line, offsetLeft, marginTop);
-        line = words[i] + ' ';
-        marginTop += lineHeight;
-      } else {
-        line = testLine;
-      }
-    }
-
-    ctx.fillText(line, offsetLeft, marginTop);
+    lineCount = drowMessageText(text);
   }
-  // ----------------------------
 
 })();
