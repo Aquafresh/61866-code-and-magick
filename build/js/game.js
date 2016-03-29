@@ -416,7 +416,7 @@
 
       var canvas = document.querySelector('.demo canvas');
       var ctx = canvas.getContext('2d');
-      var lineCount = Game.prototype._drawGameMessageText(text) + 10;
+      var lineCount = this._drawGameMessageText(text) + 10;
 
       function getRandomNumber(min, max) {
 
@@ -452,7 +452,7 @@
       ctx.fill();
       ctx.closePath();
 
-      lineCount = Game.prototype._drawGameMessageText(text);
+      lineCount = this._drawGameMessageText(text);
     },
 
 
@@ -463,19 +463,19 @@
       switch (this.state.currentStatus) {
         case Verdict.WIN:
           var text = 'Вы выиграли! Поздравляю! Может быть еще? ';
-          Game.prototype._drawGameMessageContainer(text);
+          this._drawGameMessageContainer(text);
           break;
         case Verdict.FAIL:
           text = 'Вы проиграли! Попробуйте еще.';
-          Game.prototype._drawGameMessageContainer(text);
+          this._drawGameMessageContainer(text);
           break;
         case Verdict.PAUSE:
           text = 'Игра находится на паузе. Чтобы снять её нажмите Space.';
-          Game.prototype._drawGameMessageContainer(text);
+          this._drawGameMessageContainer(text);
           break;
         case Verdict.INTRO:
           text = 'Добро прожаловать! Для начала игры нажмите Space.';
-          Game.prototype._drawGameMessageContainer(text);
+          this._drawGameMessageContainer(text);
           break;
       }
     },
