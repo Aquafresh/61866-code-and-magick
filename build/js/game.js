@@ -374,6 +374,86 @@
       }
     },
 
+    _drawGameMessageText: function(text) {
+      var canvas = document.querySelector('.demo canvas');
+      var ctx = canvas.getContext('2d');
+
+      // Тут описывается текст на canvas
+      ctx.fillStyle = '#000000';
+      ctx.font = '16px PT Mono';
+      ctx.textBaseline = 'bottom';
+
+      // Тут идет проверка переноса текста
+      var maxTextWidth = 200;
+      var lineHeight = 25;
+      var offsetLeft = 305;
+      var marginTop = 75;
+      var words = text.split(' ');
+      var countWords = words.length;
+      var line = '';
+
+      for (var i = 0; i < countWords; i++) {
+
+        var textLine = line + words[i];
+        var currentTextWidth = ctx.measureText(textLine).width;
+
+        if (currentTextWidth > maxTextWidth) {
+          ctx.fillText(line, offsetLeft, marginTop);
+          line = words[i] + ' ';
+          marginTop += lineHeight;
+
+        } else {
+          line = textLine + ' ';
+        }
+      }
+
+      ctx.fillText(line, offsetLeft, marginTop);
+
+      return marginTop;
+    },
+
+    _drawGameMessageContainer: function(text) {
+
+      var canvas = document.querySelector('.demo canvas');
+      var ctx = canvas.getContext('2d');
+      var lineCount = Game.prototype._drawGameMessageText(text) + 10;
+
+      function getRandomNumber(min, max) {
+
+        return Math.random() * (max - min) + min;
+      }
+
+      var randomRightTopNumber = getRandomNumber(510, 580);
+      var randomRightBottomNumber = getRandomNumber(480, 590);
+      var randomleftBottomNumber = getRandomNumber(240, 280);
+      var randomleftTopNumber = getRandomNumber(270, 320);
+
+      ctx.strokeStyle = 'rgba(0, 0, 0, 0.7)';
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+      ctx.beginPath();
+      ctx.moveTo(randomRightTopNumber + 10, 60);
+      ctx.lineTo(randomRightTopNumber + 10, 60);
+      ctx.lineTo(randomRightBottomNumber + 10, lineCount + 10);
+      ctx.lineTo(randomleftBottomNumber + 10, lineCount + 10);
+      ctx.lineTo(randomleftTopNumber + 10, 60);
+      ctx.stroke();
+      ctx.fill();
+      ctx.closePath();
+
+      ctx.strokeStyle = '#ffffff';
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.moveTo(randomleftTopNumber, 50);
+      ctx.lineTo(randomRightTopNumber, 50);
+      ctx.lineTo(randomRightBottomNumber, lineCount);
+      ctx.lineTo(randomleftBottomNumber, lineCount);
+      ctx.lineTo(randomleftTopNumber, 50);
+      ctx.stroke();
+      ctx.fill();
+      ctx.closePath();
+
+      lineCount = Game.prototype._drawGameMessageText(text);
+    },
 
 
     /**
@@ -383,19 +463,19 @@
       switch (this.state.currentStatus) {
         case Verdict.WIN:
           var text = 'Вы выиграли! Поздравляю! Может быть еще? ';
-          drowMessageContainer(text);
+          Game.prototype._drawGameMessageContainer(text);
           break;
         case Verdict.FAIL:
           text = 'Вы проиграли! Попробуйте еще.';
-          drowMessageContainer(text);
+          Game.prototype._drawGameMessageContainer(text);
           break;
         case Verdict.PAUSE:
           text = 'Игра находится на паузе. Чтобы снять её нажмите Space.';
-          drowMessageContainer(text);
+          Game.prototype._drawGameMessageContainer(text);
           break;
         case Verdict.INTRO:
           text = 'Добро прожаловать! Для начала игры нажмите Space.';
-          drowMessageContainer(text);
+          Game.prototype._drawGameMessageContainer(text);
           break;
       }
     },
@@ -682,6 +762,8 @@
       window.removeEventListener('keydown', this._onKeyDown);
       window.removeEventListener('keyup', this._onKeyUp);
     }
+
+
   };
 
   window.Game = Game;
@@ -691,89 +773,86 @@
   game.initializeLevelAndStart();
   game.setGameStatus(window.Game.Verdict.INTRO);
 
-  function drowMessageText(text) {
+  // function drawMessageText(text) {
 
-    var canvas = document.querySelector('.demo canvas');
-    var ctx = canvas.getContext('2d');
+  //   var canvas = document.querySelector('.demo canvas');
+  //   var ctx = canvas.getContext('2d');
 
-    // Тут описывается текст на canvas
-    ctx.fillStyle = '#000000';
-    ctx.font = '16px PT Mono';
-    ctx.textBaseline = 'bottom';
+  //   // Тут описывается текст на canvas
+  //   ctx.fillStyle = '#000000';
+  //   ctx.font = '16px PT Mono';
+  //   ctx.textBaseline = 'bottom';
 
-    // Тут идет проверка переноса текста
-    var maxTextWidth = 200;
-    var lineHeight = 25;
-    var offsetLeft = 305;
-    var marginTop = 75;
-    var words = text.split(' ');
-    var countWords = words.length;
-    var line = '';
+  //   // Тут идет проверка переноса текста
+  //   var maxTextWidth = 200;
+  //   var lineHeight = 25;
+  //   var offsetLeft = 305;
+  //   var marginTop = 75;
+  //   var words = text.split(' ');
+  //   var countWords = words.length;
+  //   var line = '';
 
-    for (var i = 0; i < countWords; i++) {
+  //   for (var i = 0; i < countWords; i++) {
 
-      var textLine = line + words[i];
-      var currentTextWidth = ctx.measureText(textLine).width;
+  //     var textLine = line + words[i];
+  //     var currentTextWidth = ctx.measureText(textLine).width;
 
-      if (currentTextWidth > maxTextWidth) {
-        ctx.fillText(line, offsetLeft, marginTop);
-        line = words[i] + ' ';
-        marginTop += lineHeight;
+  //     if (currentTextWidth > maxTextWidth) {
+  //       ctx.fillText(line, offsetLeft, marginTop);
+  //       line = words[i] + ' ';
+  //       marginTop += lineHeight;
 
-      } else {
-        line = textLine;
-      }
-    }
+  //     } else {
+  //       line = textLine + ' ';
+  //     }
+  //   }
 
-    ctx.fillText(line, offsetLeft, marginTop);
+  //   ctx.fillText(line, offsetLeft, marginTop);
 
-    return marginTop;
-  }
+  //   return marginTop;
+  // }
 
-  function drowMessageContainer(text) {
+  // function drawMessageContainer(text) {
 
-    var canvas = document.querySelector('.demo canvas');
-    var ctx = canvas.getContext('2d');
-    var lineCount = drowMessageText(text) + 10;
+  //   var canvas = document.querySelector('.demo canvas');
+  //   var ctx = canvas.getContext('2d');
+  //   var lineCount = drawMessageText(text) + 10;
 
-    function getRandomNumber(min, max) {
+  //   function getRandomNumber(min, max) {
 
-      return Math.random() * (max - min) + min;
-    }
+  //     return Math.random() * (max - min) + min;
+  //   }
 
-    // Набор рандомных значений для каждого угла
-    var randomRightTopNumber = getRandomNumber(510, 580);
-    var randomRightBottomNumber = getRandomNumber(480, 590);
-    var randomleftBottomNumber = getRandomNumber(240, 280);
-    var randomleftTopNumber = getRandomNumber(270, 320);
+  //   var randomRightTopNumber = getRandomNumber(510, 580);
+  //   var randomRightBottomNumber = getRandomNumber(480, 590);
+  //   var randomleftBottomNumber = getRandomNumber(240, 280);
+  //   var randomleftTopNumber = getRandomNumber(270, 320);
 
-    // Тут идет отрисовка тени многоугольника
-    ctx.strokeStyle = 'rgba(0, 0, 0, 0.7)';
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-    ctx.beginPath();
-    ctx.moveTo(randomRightTopNumber + 10, 60);
-    ctx.lineTo(randomRightTopNumber + 10, 60);
-    ctx.lineTo(randomRightBottomNumber + 10, lineCount + 10);
-    ctx.lineTo(randomleftBottomNumber + 10, lineCount + 10);
-    ctx.lineTo(randomleftTopNumber + 10, 60);
-    ctx.stroke();
-    ctx.fill();
-    ctx.closePath();
+  //   ctx.strokeStyle = 'rgba(0, 0, 0, 0.7)';
+  //   ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+  //   ctx.beginPath();
+  //   ctx.moveTo(randomRightTopNumber + 10, 60);
+  //   ctx.lineTo(randomRightTopNumber + 10, 60);
+  //   ctx.lineTo(randomRightBottomNumber + 10, lineCount + 10);
+  //   ctx.lineTo(randomleftBottomNumber + 10, lineCount + 10);
+  //   ctx.lineTo(randomleftTopNumber + 10, 60);
+  //   ctx.stroke();
+  //   ctx.fill();
+  //   ctx.closePath();
 
-    // Тут идет отрисовка многоугольника
-    ctx.strokeStyle = '#ffffff';
-    ctx.fillStyle = '#ffffff';
-    ctx.beginPath();
-    ctx.moveTo(randomleftTopNumber, 50);
-    ctx.lineTo(randomRightTopNumber, 50);
-    ctx.lineTo(randomRightBottomNumber, lineCount);
-    ctx.lineTo(randomleftBottomNumber, lineCount);
-    ctx.lineTo(randomleftTopNumber, 50);
-    ctx.stroke();
-    ctx.fill();
-    ctx.closePath();
+  //   ctx.strokeStyle = '#ffffff';
+  //   ctx.fillStyle = '#ffffff';
+  //   ctx.beginPath();
+  //   ctx.moveTo(randomleftTopNumber, 50);
+  //   ctx.lineTo(randomRightTopNumber, 50);
+  //   ctx.lineTo(randomRightBottomNumber, lineCount);
+  //   ctx.lineTo(randomleftBottomNumber, lineCount);
+  //   ctx.lineTo(randomleftTopNumber, 50);
+  //   ctx.stroke();
+  //   ctx.fill();
+  //   ctx.closePath();
 
-    lineCount = drowMessageText(text);
-  }
+  //   lineCount = drawMessageText(text);
+  // }
 
 })();
