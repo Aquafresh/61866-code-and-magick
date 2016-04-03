@@ -76,6 +76,8 @@
 
     if(!reviewUserName.checkValidity()) {
       reviewSecondFieldset.appendChild(errorFieldCreate);
+      reviewFieldsBar.classList.remove('invisible');
+      reviewFieldsName.classList.remove('invisible');
     }
   });
 
@@ -84,12 +86,15 @@
 
     if(!reviewUserText.checkValidity()) {
       reviewThirdFieldset.appendChild(errorFieldClone);
+      reviewFieldsBar.classList.remove('invisible');
+      reviewFieldsText.classList.remove('invisible');
     }
   });
 
   reviewBtnSubmit.addEventListener('click', function() {
     validityVerify();
     reviewBtnSubmit.removeAttribute('disabled');
+
   });
 
 })();
