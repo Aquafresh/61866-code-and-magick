@@ -42,34 +42,25 @@
       reviewUserText.required = 'true';
       reviewFieldsBar.classList.remove('invisible');
       reviewFieldsText.classList.remove('invisible');
-
-      console.log('Оценка меньше 3');
     } else {
       reviewUserText.removeAttribute('required');
-      console.log('Оценка больше 3');
       reviewFieldsText.classList.add('invisible');
     }
 
     validityVerify();
-
-    console.log('Я изменияю оценку');
   });
 
   function validityVerify() {
     if(reviewUserText.hasAttribute('required')) {
-      console.log('Есть req у textarea');
       if(reviewUserName.checkValidity() && reviewUserText.checkValidity()) {
         reviewFieldsBar.classList.add('invisible');
         reviewBtnSubmit.removeAttribute('disabled');
-        console.log('Оба поля прошли валидацию');
       } else if(reviewUserName.checkValidity()) {
         reviewFieldsName.classList.add('invisible');
         reviewBtnSubmit.disabled = 'true';
-        console.log('Имя прошло валидацию, а текст нет');
       } else if(reviewUserText.checkValidity()) {
         reviewFieldsText.classList.add('invisible');
         reviewBtnSubmit.disabled = true;
-        console.log('Текст прошел валидацию, а имя нет');
       }
     } else {
       if(reviewUserName.checkValidity()) {
@@ -84,9 +75,7 @@
     validityVerify();
 
     if(!reviewUserName.checkValidity()) {
-      console.log('wqe1');
       reviewSecondFieldset.appendChild(errorFieldCreate);
-
     }
   });
 
@@ -94,7 +83,6 @@
     validityVerify();
 
     if(!reviewUserText.checkValidity()) {
-      console.log('wqe2');
       reviewThirdFieldset.appendChild(errorFieldClone);
     }
   });
