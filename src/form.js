@@ -25,6 +25,12 @@
   var reviewFieldsName = document.querySelector('.review-fields-name');
   var reviewFieldsText = document.querySelector('.review-fields-text');
   var reviewMarkField = document.querySelector('.review-form-group-mark');
+  var reviewSecondFieldset = document.querySelector('.review-form-group-mark + .review-form-group');
+  var reviewThirdFieldset = document.querySelector('.review-form-group-mark + .review-form-group + .review-form-group');
+  var errorFieldCreate = document.createElement('div');
+  var errorText = 'Вам нужно заполнить все обязательные поля';
+  errorFieldCreate.innerHTML = '<span>' + errorText + '</span>';
+  var errorFieldClone = errorFieldCreate.cloneNode(true);
 
   reviewUserName.required = true;
   reviewFieldsText.classList.add('invisible');
@@ -67,7 +73,7 @@
       }
     } else {
       if(reviewUserName.checkValidity()) {
-        reviewFieldsBar.remove();
+        reviewFieldsBar.classList.add('invisible');
       } else {
         reviewBtnSubmit.disabled = true;
       }
@@ -78,8 +84,9 @@
     validityVerify();
 
     if(!reviewUserName.checkValidity()) {
+      console.log('wqe1');
+      reviewSecondFieldset.appendChild(errorFieldCreate);
 
-      reviewUserName.setCustomValidity('Это поле не может быть пустым.');
     }
   });
 
@@ -87,8 +94,8 @@
     validityVerify();
 
     if(!reviewUserText.checkValidity()) {
-
-      reviewUserName.setCustomValidity('Это поле не может быть пустым.');
+      console.log('wqe2');
+      reviewThirdFieldset.appendChild(errorFieldClone);
     }
   });
 
