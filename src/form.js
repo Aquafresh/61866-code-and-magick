@@ -40,7 +40,7 @@
     var reviewUserMarkValue = reviewUserMark.value;
 
     if(reviewUserMarkValue < MAX_MARK_REQUIRED) {
-      reviewUserText.required = 'true';
+      reviewUserText.required = true;
       reviewFieldsBar.classList.remove('invisible');
       reviewFieldsText.classList.remove('invisible');
     } else {
@@ -58,7 +58,7 @@
         reviewBtnSubmit.removeAttribute('disabled');
       } else if(reviewUserName.checkValidity()) {
         reviewFieldsName.classList.add('invisible');
-        reviewBtnSubmit.disabled = 'true';
+        reviewBtnSubmit.disabled = true;
       } else if(reviewUserText.checkValidity()) {
         reviewFieldsText.classList.add('invisible');
         reviewBtnSubmit.disabled = true;
