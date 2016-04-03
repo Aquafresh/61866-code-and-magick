@@ -26,81 +26,76 @@
   var reviewFieldsText = document.querySelector('.review-fields-text');
   var reviewMarkField = document.querySelector('.review-form-group-mark');
 
-  reviewUserName.required = 'true';
-
+  reviewUserName.required = true;
+  reviewFieldsText.classList.add('invisible');
 
   reviewMarkField.addEventListener('change', function() {
     var reviewUserMarkValue = reviewUserMark.value;
 
     if(reviewUserMarkValue < MAX_MARK_REQUIRED) {
       reviewUserText.required = 'true';
+      reviewFieldsBar.classList.remove('invisible');
+      reviewFieldsText.classList.remove('invisible');
 
       console.log('Оценка меньше 3');
     } else {
       reviewUserText.removeAttribute('required');
       console.log('Оценка больше 3');
+      reviewFieldsText.classList.add('invisible');
     }
+
+    validityVerify();
 
     console.log('Я изменияю оценку');
   });
-
-  function disableBtn() {
-    reviewBtnSubmit.disabled = 'true';
-  }
-
-  function activeBtn() {
-    reviewBtnSubmit.removeAttribute('disabled');
-  }
 
   function validityVerify() {
     if(reviewUserText.hasAttribute('required')) {
       console.log('Есть req у textarea');
       if(reviewUserName.checkValidity() && reviewUserText.checkValidity()) {
-        reviewFieldsBar.remove();
-        activeBtn();
+        reviewFieldsBar.classList.add('invisible');
+        reviewBtnSubmit.removeAttribute('disabled');
         console.log('Оба поля прошли валидацию');
       } else if(reviewUserName.checkValidity()) {
-        reviewFieldsName.remove();
-        disableBtn();
+        reviewFieldsName.classList.add('invisible');
+        reviewBtnSubmit.disabled = 'true';
         console.log('Имя прошло валидацию, а текст нет');
-        // reviewUserName.setCustomValidity('Это поле не может быть пустым.');
       } else if(reviewUserText.checkValidity()) {
-        reviewFieldsText.remove();
-        disableBtn();
+        reviewFieldsText.classList.add('invisible');
+        reviewBtnSubmit.disabled = true;
         console.log('Текст прошел валидацию, а имя нет');
       }
     } else {
       if(reviewUserName.checkValidity()) {
         reviewFieldsBar.remove();
-        // reviewUserName.setCustomValidity('Это поле не может быть пустым.');
       } else {
-        disableBtn();
+        reviewBtnSubmit.disabled = true;
       }
     }
   }
 
   reviewUserName.addEventListener('change', function() {
     validityVerify();
+
+    if(!reviewUserName.checkValidity()) {
+
+      reviewUserName.setCustomValidity('Это поле не может быть пустым.');
+    }
   });
 
   reviewUserText.addEventListener('change', function() {
     validityVerify();
-  });
 
-  reviewUserText.addEventListener('onblur', function() {
-    validityVerify();
+    if(!reviewUserText.checkValidity()) {
+
+      reviewUserName.setCustomValidity('Это поле не может быть пустым.');
+    }
   });
 
   reviewBtnSubmit.addEventListener('click', function() {
     validityVerify();
-    activeBtn();
+    reviewBtnSubmit.removeAttribute('disabled');
   });
-
-
-
-
-
-
 
 })();
 
