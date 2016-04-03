@@ -36,6 +36,7 @@
   reviewFieldsText.classList.add('invisible');
 
   reviewMarkField.addEventListener('change', function() {
+
     var reviewUserMarkValue = reviewUserMark.value;
 
     if(reviewUserMarkValue < MAX_MARK_REQUIRED) {
@@ -65,6 +66,7 @@
     } else {
       if(reviewUserName.checkValidity()) {
         reviewFieldsBar.classList.add('invisible');
+        reviewBtnSubmit.disabled = false;
       } else {
         reviewBtnSubmit.disabled = true;
       }
