@@ -15,103 +15,92 @@
     formContainer.classList.add('invisible');
   };
 
-  function reviewFormValidate() {
+  var MAX_MARK_REQUIRED = 3;
+  var reviewForm = document.querySelector('.review-form');
+  var reviewUserName = reviewForm.elements['review-name'];
+  var reviewUserMark = reviewForm.elements.namedItem('review-mark');
+  var reviewUserText = reviewForm.elements['review-text'];
+  var reviewBtnSubmit = document.querySelector('.review-submit');
+  var reviewFieldsBar = document.querySelector('.review-fields');
+  var reviewFieldsName = document.querySelector('.review-fields-name');
+  var reviewFieldsText = document.querySelector('.review-fields-text');
+  var reviewMarkField = document.querySelector('.review-form-group-mark');
 
-    var MAX_MARK_REQUIRED = 3;
-    var reviewForm = document.querySelector('.review-form');
-    var reviewUserName = reviewForm.elements['review-name'];
-    var reviewUserMark = document.forms[1].elements['review-mark'];
-    var reviewUserText = reviewForm.elements['review-text'];
-    var reviewBtnSubmit = document.querySelector('.review-submit');
+  reviewUserName.required = 'true';
 
-    reviewUserName.setAttribute('required', true);
 
-    function markCheck() {
-      var checkedItem = null;
-      for(var i = 0; i < reviewUserMark.length; i++) {
-        if(reviewUserMark[i].checked) {
-          checkedItem = reviewUserMark[i].value;
-          console.log(checkedItem);
-        }
-      }
-      return checkedItem;
+  reviewMarkField.addEventListener('change', function() {
+    var reviewUserMarkValue = reviewUserMark.value;
+
+    if(reviewUserMarkValue < MAX_MARK_REQUIRED) {
+      reviewUserText.required = 'true';
+
+      console.log('Оценка меньше 3');
+    } else {
+      reviewUserText.removeAttribute('required');
+      console.log('Оценка больше 3');
     }
 
-    var markCheckedNumber = markCheck();
-    console.log(markCheckedNumber);
+    console.log('Я изменияю оценку');
+  });
 
-    function verifyMark() {
-
-      if(markCheckedNumber < MAX_MARK_REQUIRED) {
-        reviewUserText.setAttribute('required', true);
-        console.log(markCheckedNumber);
-      } else {
-        reviewUserText.removeAttribute('required');
-        console.log(markCheckedNumber);
-      }
-    }
-
-    reviewForm.addEventListener('change', function() {
-
-      markCheckedNumber = markCheck();
-      verifyMark();
-
-      if(reviewUserText.hasAttribute('required')) {
-
-        console.log('changeTime');
-
-        if(reviewUserName.checkValidity() && reviewUserText.checkValidity()) {
-          document.querySelector('.review-fields').remove();
-        } else if(reviewUserName.checkValidity()) {
-          document.querySelector('.review-fields-name').remove();
-        } else if(reviewUserText.checkValidity()) {
-          document.querySelector('.review-fields-text').remove();
-        }
-      } else {
-        if(reviewUserName.checkValidity()) {
-          document.querySelector('.review-fields').remove();
-        }
-      }
-    });
-
-    reviewBtnSubmit.addEventListener('click', function() {
-
-      function inputEmptyCheck() {
-
-        var nameEmptyCheck = reviewUserName.value;
-        var textEmptyCheck = reviewUserText.value;
-
-        if( nameEmptyCheck === null || nameEmptyCheck === '') {
-
-          var errorMessage = document.createElement('div');
-          errorMessage.innerHTML = '<span class="errorMessage">Это поле не может быть пустым!</span>';
-          document.querySelector('.review-form-group-mark + .review-form-group').appendChild(errorMessage);
-        }
-
-        if(reviewUserText.hasAttribute('required')) {
-
-
-          if( textEmptyCheck === null || textEmptyCheck === '') {
-
-            errorMessage = document.createElement('div');
-            errorMessage.innerHTML = '<span class="errorMessage">Это поле не может быть пустым!</span>';
-            document.querySelector('.review-form-group-mark + .review-form-group + .review-form-group').appendChild(errorMessage);
-          }
-
-        }
-
-        return false;
-      }
-
-      inputEmptyCheck();
-
-      if(reviewUserName.checkValidity() && reviewUserText.checkValidity()) {
-        console.log('FormFail');
-      }
-    });
-
+  function disableBtn() {
+    reviewBtnSubmit.disabled = 'true';
   }
 
-  reviewFormValidate();
+  function activeBtn() {
+    reviewBtnSubmit.removeAttribute('disabled');
+  }
+
+  function validityVerify() {
+    if(reviewUserText.hasAttribute('required')) {
+      console.log('Есть req у textarea');
+      if(reviewUserName.checkValidity() && reviewUserText.checkValidity()) {
+        reviewFieldsBar.remove();
+        activeBtn();
+        console.log('Оба поля прошли валидацию');
+      } else if(reviewUserName.checkValidity()) {
+        reviewFieldsName.remove();
+        disableBtn();
+        console.log('Имя прошло валидацию, а текст нет');
+        // reviewUserName.setCustomValidity('Это поле не может быть пустым.');
+      } else if(reviewUserText.checkValidity()) {
+        reviewFieldsText.remove();
+        disableBtn();
+        console.log('Текст прошел валидацию, а имя нет');
+      }
+    } else {
+      if(reviewUserName.checkValidity()) {
+        reviewFieldsBar.remove();
+        // reviewUserName.setCustomValidity('Это поле не может быть пустым.');
+      } else {
+        disableBtn();
+      }
+    }
+  }
+
+  reviewUserName.addEventListener('change', function() {
+    validityVerify();
+  });
+
+  reviewUserText.addEventListener('change', function() {
+    validityVerify();
+  });
+
+  reviewUserText.addEventListener('onblur', function() {
+    validityVerify();
+  });
+
+  reviewBtnSubmit.addEventListener('click', function() {
+    validityVerify();
+    activeBtn();
+  });
+
+
+
+
+
+
+
 })();
 
