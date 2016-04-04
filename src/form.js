@@ -96,37 +96,47 @@
   reviewBtnSubmit.addEventListener('click', function() {
     validityVerify();
     reviewBtnSubmit.removeAttribute('disabled');
-
   });
 
+  window.onload = function() {
+    validityVerify();
+  };
+
+
   var cookies = require('browser-cookies');
-  var currentDate = new Date();
-  var currentDateMilliseconds = currentDate.getTime();
-  var currentYear = currentDate.getFullYear();
-  var myBirthdayDate = new Date(currentYear - 1, 6, 22, 0, 0, 0, 0);
-  var myBirthdayDateMilliseconds = myBirthdayDate.getTime();
-  var daysGone = currentDateMilliseconds - myBirthdayDateMilliseconds;
-  var userNameValue = cookies.get('userName');
-  var userMarkValue = cookies.get('userMark');
+
+  function cookiesEndTime() {
+
+    var currentDate = new Date();
+    var currentDateMilliseconds = currentDate.getTime();
+    var currentYear = currentDate.getFullYear();
+    var myBirthdayDateMilliseconds = (new Date(currentYear, 6, 22, 0, 0, 0, 0)).getTime();
+
+    if(currentDateMilliseconds < myBirthdayDateMilliseconds) {
+      myBirthdayDateMilliseconds = (new Date(currentYear - 1, 6, 22, 0, 0, 0, 0)).getTime();
+    } else {
+      myBirthdayDateMilliseconds = (new Date(currentYear, 6, 22, 0, 0, 0, 0)).getTime();
+    }
+    var daysGone = Math.ceil((currentDateMilliseconds - myBirthdayDateMilliseconds) / 3600 / 24 / 1000 );
+    return daysGone;
+  }
+
+  var daysGoneValue = cookiesEndTime();
 
   reviewForm.onsubmit = function(e) {
     e.preventDefault();
-    cookies.set('userName', reviewUserName.value, {expires: daysGone});
-    cookies.set('userMark', reviewUserMark.value, {expires: daysGone});
+    cookies.set('userName', reviewUserName.value, {expires: daysGoneValue});
+    cookies.set('userMark', reviewUserMark.value, {expires: daysGoneValue});
     this.submit();
   };
 
-  function getCookie(name) {
-    var matches = document.cookie.match(new RegExp('(?:^|; )' + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + '=([^;]*)'));
-    return matches;
+  if(cookies.get('userName')) {
+    reviewUserName.value = cookies.get('userName');
   }
 
-  if(getCookie('userName')) {
-    reviewUserName.value = userNameValue;
+  if(cookies.get('userMark')) {
+    reviewUserMark.value = cookies.get('userMark');
   }
 
-  if(getCookie('userMark')) {
-    reviewUserMark.value = userMarkValue;
-  }
 })();
 
