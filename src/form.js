@@ -34,7 +34,6 @@
 
   reviewUserName.required = true;
   reviewFieldsText.classList.add('invisible');
-
   reviewMarkField.addEventListener('change', function() {
 
     var reviewUserMarkValue = reviewUserMark.value;
@@ -136,6 +135,5 @@
   if(cookies.get('userMark')) {
     reviewUserMark.value = cookies.get('userMark');
   }
-
 })();
 
