@@ -102,7 +102,6 @@
     validityVerify();
   };
 
-
   var cookies = require('browser-cookies');
 
   function cookiesEndTime() {
