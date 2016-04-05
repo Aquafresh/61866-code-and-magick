@@ -97,17 +97,12 @@
     reviewBtnSubmit.removeAttribute('disabled');
   });
 
-  window.onload = function() {
-    validityVerify();
-  };
-
   var cookies = require('browser-cookies');
 
   function cookiesEndTime() {
 
-    var currentDate = new Date();
-    var currentDateMilliseconds = currentDate.getTime();
-    var currentYear = currentDate.getFullYear();
+    var currentDateMilliseconds = (new Date()).getTime();
+    var currentYear = (new Date()).getFullYear();
     var myBirthdayDateMilliseconds = (new Date(currentYear, 6, 22, 0, 0, 0, 0)).getTime();
 
     if(currentDateMilliseconds < myBirthdayDateMilliseconds) {
@@ -119,9 +114,8 @@
     return daysGone;
   }
 
-  var daysGoneValue = cookiesEndTime();
-
   reviewForm.onsubmit = function(e) {
+    var daysGoneValue = cookiesEndTime();
     e.preventDefault();
     cookies.set('userName', reviewUserName.value, {expires: daysGoneValue});
     cookies.set('userMark', reviewUserMark.value, {expires: daysGoneValue});
@@ -135,5 +129,7 @@
   if(cookies.get('userMark')) {
     reviewUserMark.value = cookies.get('userMark');
   }
+
+  validityVerify();
 })();
 
