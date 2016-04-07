@@ -28,7 +28,6 @@
     var authorContainer = element.querySelector('.review-author');
     element.querySelector('.review-text').textContent = data.description;
     container.appendChild(element);
-    var authorImg = new Image();
 
     switch(data.rating) {
       case 1:
@@ -50,24 +49,25 @@
         break;
     }
 
-    authorImg.src = data.author.picture;
+    authorContainer.src = data.author.picture;
     var errorTimeout;
 
-    authorImg.onload = function() {
+    authorContainer.onload = function() {
       clearTimeout(errorTimeout);
-      authorContainer.src = data.author.picture;
+
       authorContainer.alt = data.author.name;
       authorContainer.setAttribute('width', '124');
       authorContainer.setAttribute('height', '124');
     };
 
-    authorImg.onerror = function() {
+    authorContainer.onerror = function() {
       authorContainer.classList.add('review-load-failure');
     };
 
     errorTimeout = setTimeout(function() {
       authorContainer.src = '';
       authorContainer.classList.add('review-load-failure');
+
     }, 10000);
   };
 
