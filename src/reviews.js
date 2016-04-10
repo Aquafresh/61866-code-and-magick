@@ -1,78 +1,94 @@
-/* global reviews */
+
 'use strict';
 
 (function() {
 
-  reviewsFilterHide();
+  var getReviews = function(callback) {
+    var xhr = new XMLHttpRequest();
+
+    xhr.onload = function(e) {
+      var xhrRequestObj = e.target;
+      var response = xhrRequestObj.response;
+      var reviewsArr = JSON.parse(response);
+      callback(reviewsArr);
+    };
+
+    xhr.open('GET', '//o0.github.io/assets/json/reviews.json');
+    xhr.send();
+  };
+
   var reviewsContainer = document.querySelector('.reviews-list');
   var reviewTemplate = document.querySelector('#review-template');
+  var reviewsFilter = document.querySelector('.reviews-filter');
+  var templateContentExist = 'content' in reviewTemplate;
 
   function reviewsFilterHide() {
-    var reviewsFilter = document.querySelector('.reviews-filter');
     reviewsFilter.classList.add('invisible');
   }
 
+  reviewsFilterHide();
+
   function reviewsFilterShow() {
-    var reviewsFilter = document.querySelector('.reviews-filter');
     reviewsFilter.classList.remove('invisible');
   }
 
-  if ('content' in reviewTemplate) {
-    var reviewTemplateClone = reviewTemplate.content.querySelector('.review');
-  } else {
-    reviewTemplateClone = reviewTemplate.querySelector('.review');
+  function checkTemplateExist() {
+    if (templateContentExist) {
+      return reviewTemplate.content.querySelector('.review');
+    } else {
+      return reviewTemplate.querySelector('.review');
+    }
   }
 
+  var templateExist = checkTemplateExist();
   var getReviewBlock = function(data, container) {
-    var element = reviewTemplateClone.cloneNode(true);
-    var authorContainer = element.querySelector('.review-author');
-    element.querySelector('.review-text').textContent = data.description;
+    var element = templateExist.cloneNode(true);
     container.appendChild(element);
+    var reviewRating = element.querySelector('.review-rating');
+    var authorImgNode = new Image(124, 124);
+    var RATINGS = [
+      'one',
+      'two',
+      'three',
+      'four',
+      'five'
+    ];
 
-    switch(data.rating) {
-      case 1:
-        break;
-      case 2:
-        element.querySelector('.review-rating').classList.add('review-rating-two');
-        break;
-      case 3:
-        element.querySelector('.review-rating').classList.add('review-rating-three');
-        break;
-      case 4:
-        element.querySelector('.review-rating').classList.add('review-rating-four');
-        break;
-      case 5:
-        element.querySelector('.review-rating').classList.add('review-rating-five');
-        break;
-      default:
-        element.querySelector('.review-rating').classList.add('invisible');
-      break;
-    }
+    reviewRating.classList.add('review-rating-' + RATINGS[data.rating - 1]);
+    element.querySelector('.review-author').remove();
+    authorImgNode.src = data.author.picture;
+    authorImgNode.classList.add('review-author');
+    element.insertBefore(authorImgNode, reviewRating);
+    element.querySelector('.review-text').textContent = data.description;
 
-    authorContainer.src = data.author.picture;
     var errorTimeout;
 
-    authorContainer.onload = function() {
+    authorImgNode.onload = function() {
       clearTimeout(errorTimeout);
-
-      authorContainer.alt = data.author.name;
-      authorContainer.setAttribute('width', '124');
-      authorContainer.setAttribute('height', '124');
+      authorImgNode.alt = data.author.name;
     };
 
-    authorContainer.onerror = function() {
-      authorContainer.classList.add('review-load-failure');
+    authorImgNode.onerror = function() {
+      element.classList.add('review-load-failure');
     };
 
     errorTimeout = setTimeout(function() {
-      authorContainer.src = '';
-      authorContainer.classList.add('review-load-failure');
+      authorImgNode.src = '';
+      element.classList.add('review-load-failure');
 
     }, 10000);
+
   };
 
-  reviews.forEach(function(data) {
-    getReviewBlock(data, reviewsContainer);
+  var renderReviews = function(reviews) {
+    reviews.forEach(function(data) {
+      getReviewBlock(data, reviewsContainer);
+    });
+  };
+
+  getReviews(function(loadedReviews) {
+    var reviews = loadedReviews;
+    renderReviews(reviews);
   });
 
   reviewsFilterShow();
