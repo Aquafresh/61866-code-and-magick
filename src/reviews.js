@@ -7,6 +7,7 @@
   var reviewTemplate = document.querySelector('#review-template');
   var reviewsFilter = document.querySelector('.reviews-filter');
   var templateContentExist = 'content' in reviewTemplate;
+  var getReviewsArr = [];
   var _RATINGS = [
     'one',
     'two',
@@ -15,7 +16,7 @@
     'five'
   ];
 
-  // Получение массива объектов через xhr
+  /** @param {function(Array.<Object>)} callback */
   var getReviews = function(callback) {
     var xhr = new XMLHttpRequest();
     xhr.onload = function(e) {
@@ -44,7 +45,11 @@
     }
   };
 
-  // Проверка наличия шаблона
+  /** @param {Array.<Object>} reviews */
+  getReviews(function(loadedReviews) {
+    getReviewsArr = loadedReviews;
+  });
+
   function checkTemplateExist() {
     if (templateContentExist) {
       return reviewTemplate.content.querySelector('.review');
@@ -53,7 +58,11 @@
     }
   }
 
-  // Шаблон отзыва
+
+  /**
+   * @param {Object} data
+   * @param {HTMLElement} container
+   */
   var getReviewBlock = function(data, container) {
 
     var templateExist = checkTemplateExist();
@@ -87,7 +96,7 @@
     }, 10000);
   };
 
-  // Развешивает события клик на все bar'ы сортировки
+  /** @param {function()} clickEvent*/
   var setFilterEvent = function() {
     var filtersBtn = reviewsFilter.querySelectorAll('.reviews-filter-item');
     for(var i = 0; i < filtersBtn.length; i++) {
@@ -97,106 +106,79 @@
     }
   };
 
-  // Функция для сортировки
-  var setFilterActive = function(filter) {
+  /**
+   * @param {Array.<Object>} reviews
+   * @param {Filter} filter
+   */
+  var setFiltredActive = function(filter) {
+
+    var getReviewsArrCopy = getReviewsArr.slice(0);
+    var temporaryArr;
+
     switch(filter) {
-      case 'reviews-all':
-        // Сортировка по умолчанию
-        getReviews(function(loadedReviews) {
-          var getReviewsObj = loadedReviews;
-          renderReviews(getReviewsObj);
-        });
-        console.log('1');
-        break;
       case 'reviews-recent':
-        // Сортирвока по дате с гардой в две недели
-        getReviews(function(loadedReviews) {
-          var currentDate = new Date();
-          var maxDateRange = currentDate - (3600 * 24 * 14 * 1000);
-          var getReviewsObj = loadedReviews;
-          var getReviewsSort;
-
-          getReviewsObj[1].date = '2016-03-01';
-          getReviewsObj[2].date = '2016-03-01';
-          getReviewsObj[3].date = '2016-03-01';
-          getReviewsObj[4].date = '2016-03-01';
-          getReviewsObj[5].date = '2016-03-01';
-
-          getReviewsSort = getReviewsObj.filter(function(a) {
-            var reviewDate = Date.parse(a.date);
-            return reviewDate > maxDateRange;
-          });
-          getReviewsSort.sort(function(a, b) {
-            return Date.parse(b.date) - Date.parse(a.date);
-          });
-          renderReviews(getReviewsSort);
+        var currentDate = new Date();
+        var maxDateRange = currentDate.setDate(currentDate.getDate() - 14);
+        getReviewsArrCopy[1].date = '2016-03-01';
+        getReviewsArrCopy.filter(function(a) {
+          var reviewDate = Date.parse(a.date);
+          return reviewDate > maxDateRange;
         });
-        console.log('2');
+        getReviewsArrCopy.sort(function(a, b) {
+          return Date.parse(b.date) - Date.parse(a.date);
+        });
         break;
       case 'reviews-good':
         //Сортировка по убыванию рейтига с 5
-        getReviews(function(loadedReviews) {
-          var getReviewsObj = loadedReviews;
-          var getReviewsSort;
-          var positiveArr = getReviewsObj.filter(function(sortArrItme, i) {
-            return getReviewsObj[i].rating >= 3;
-          });
-
-          getReviewsSort = positiveArr.sort(function(a, b) {
-            return b.rating - a.rating;
-          });
-
-          renderReviews(getReviewsSort);
+        temporaryArr = getReviewsArrCopy.filter(function(sortArrItem, i) {
+          return getReviewsArrCopy[i].rating >= 3;
         });
-        console.log('3');
+        temporaryArr.sort(function(a, b) {
+          return b.rating - a.rating;
+        });
+        getReviewsArrCopy = temporaryArr;
         break;
       case 'reviews-bad':
-        // Сортировка по возрастанию рейтинга с 1
-        getReviews(function(loadedReviews) {
-          var getReviewsObj = loadedReviews;
-          var getReviewsSort;
-          var positiveArr = getReviewsObj.filter(function(sortArrItme, i) {
-            return getReviewsObj[i].rating < 3;
-          });
-
-          getReviewsSort = positiveArr.sort(function(a, b) {
-            return a.rating - b.rating;
-          });
-
-          renderReviews(getReviewsSort);
+        temporaryArr = getReviewsArrCopy.filter(function(sortArrItem, i) {
+          return getReviewsArrCopy[i].rating < 3;
         });
-        console.log('4');
+        temporaryArr.sort(function(a, b) {
+          return a.rating - b.rating;
+        });
+        getReviewsArrCopy = temporaryArr;
         break;
       case 'reviews-popular':
-        // Сортировка по полезности
-        getReviews(function(loadedReviews) {
-          var getReviewsObj = loadedReviews;
-          var getReviewsSort;
-          getReviewsSort = getReviewsObj.sort(function(a, b) {
-            return a.review_usefulness - b.review_usefulness;
-          });
-          renderReviews(getReviewsSort);
+        getReviewsArrCopy.sort(function(a, b) {
+          return a.review_usefulness - b.review_usefulness;
         });
-        console.log('5');
         break;
     }
+
+    return getReviewsArrCopy;
   };
 
-  // Запуск функции сортировки
-  setFilterEvent();
+  /**
+   * @param {Filter} filter
+   */
+  var setFilterActive = function(filter) {
 
-  // Дефолтное состояние фильтров при загрузке
-  getReviews(function(loadedReviews) {
-    var getReviewsObj = loadedReviews;
-    renderReviews(getReviewsObj);
-  });
+    var filteredReviews = setFiltredActive(filter);
+    renderReviews(filteredReviews);
+  };
 
-  // Функция для отрисовки через forEach отзывов
+  /** @param {Array.<Object>} reviews */
   var renderReviews = function(reviews) {
     reviewsContainer.innerHTML = '';
     reviews.forEach(function(data) {
       getReviewBlock(data, reviewsContainer);
     });
   };
+
+  getReviews(function(loadedReviews) {
+    getReviewsArr = loadedReviews;
+    setFilterActive();
+    setFilterEvent();
+    renderReviews(getReviewsArr);
+  });
 
 })();
