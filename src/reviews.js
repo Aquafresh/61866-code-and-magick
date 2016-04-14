@@ -5,21 +5,16 @@
 
   /** Reviews html containter*/
   var reviewsContainer = document.querySelector('.reviews-list');
-
   /** Review html template*/
   var reviewTemplate = document.querySelector('#review-template');
-
   /** Sort filters containter*/
   var reviewsFilter = document.querySelector('.reviews-filter');
-
   /** Check exist html template*/
   var templateContentExist = 'content' in reviewTemplate;
-
   /** Get array from xhr*/
   var getReviewsArr = [];
-
   /** @constant {Array} */
-  var _RATINGS = [
+  var RATINGS = [
     'one',
     'two',
     'three',
@@ -27,7 +22,9 @@
     'five'
   ];
 
-  /** @param {function(Array.<Object>)} callback*/
+  /**
+   * @param  {Function} callback
+   */
   var getReviews = function(callback) {
     var xhr = new XMLHttpRequest();
     xhr.onload = function(e) {
@@ -56,7 +53,9 @@
     }
   };
 
-  /** @param {Array.<Object>} get copy array from xhr */
+  /**
+   * @param  {[Array.<Object>]} loadedReviews)
+   */
   getReviews(function(loadedReviews) {
     getReviewsArr = loadedReviews;
   });
@@ -70,8 +69,9 @@
   }
 
   /**
-   * @param {Object} data
-   * @param {HTMLElement} container
+   * [getReviewBlock description]
+   * @param  {[Object]} data
+   * @param  {[HTMLElement]} container
    */
   var getReviewBlock = function(data, container) {
 
@@ -82,7 +82,7 @@
     var reviewCurrentImg = element.querySelector('.review-author');
     var authorImgNode = new Image(124, 124);
 
-    reviewRating.classList.add('review-rating-' + _RATINGS[data.rating - 1]);
+    reviewRating.classList.add('review-rating-' + RATINGS[data.rating - 1]);
     authorImgNode.src = data.author.picture;
     element.replaceChild(authorImgNode, reviewCurrentImg);
     authorImgNode.classList.add('review-author');
@@ -106,7 +106,7 @@
     }, 10000);
   };
 
-  /** @param {function()} set clickEvent*/
+
   var setFilterEvent = function() {
     var filtersBtn = reviewsFilter.querySelectorAll('.reviews-filter-item');
     for(var i = 0; i < filtersBtn.length; i++) {
@@ -117,8 +117,8 @@
   };
 
   /**
-   * @param {function(Array.<Object>)} set reviews option
-   * @return {Array} return array reviews
+   * @param {[Array.<Object>]} filter
+   * @return {[Array.<Object>]} getReviewsArrCopy
    */
   var setFiltredActive = function(filter) {
 
@@ -170,7 +170,7 @@
   };
 
   /**
-   * @param {function} reviews filter active
+   * @param {[Array.<Object>]} filter
    */
   var setFilterActive = function(filter) {
 
@@ -178,7 +178,10 @@
     renderReviews(filteredReviews);
   };
 
-  /** @param {function(Array.<Object>)} Clear old html container set new array */
+  /**
+   * [renderReviews description]
+   * @param  {[Array.<Object>]} reviews
+   */
   var renderReviews = function(reviews) {
     reviewsContainer.innerHTML = '';
     reviews.forEach(function(data) {
@@ -186,7 +189,10 @@
     });
   };
 
-  /** @param {function(Array.<Object>)} */
+
+  /**
+   * @param  {[Array.<Object>]} loadedReviews)
+   */
   getReviews(function(loadedReviews) {
     getReviewsArr = loadedReviews;
     setFilterActive();
