@@ -3,11 +3,22 @@
 
 (function() {
 
+  /** Reviews html containter*/
   var reviewsContainer = document.querySelector('.reviews-list');
+
+  /** Review html template*/
   var reviewTemplate = document.querySelector('#review-template');
+
+  /** Sort filters containter*/
   var reviewsFilter = document.querySelector('.reviews-filter');
+
+  /** Check exist html template*/
   var templateContentExist = 'content' in reviewTemplate;
+
+  /** Get array from xhr*/
   var getReviewsArr = [];
+
+  /** @constant {Array} */
   var _RATINGS = [
     'one',
     'two',
@@ -16,7 +27,7 @@
     'five'
   ];
 
-  /** @param {function(Array.<Object>)} callback */
+  /** @param {function(Array.<Object>)} callback*/
   var getReviews = function(callback) {
     var xhr = new XMLHttpRequest();
     xhr.onload = function(e) {
@@ -45,7 +56,7 @@
     }
   };
 
-  /** @param {Array.<Object>} reviews */
+  /** @param {Array.<Object>} get copy array from xhr */
   getReviews(function(loadedReviews) {
     getReviewsArr = loadedReviews;
   });
@@ -57,7 +68,6 @@
       return reviewTemplate.querySelector('.review');
     }
   }
-
 
   /**
    * @param {Object} data
@@ -96,7 +106,7 @@
     }, 10000);
   };
 
-  /** @param {function()} clickEvent*/
+  /** @param {function()} set clickEvent*/
   var setFilterEvent = function() {
     var filtersBtn = reviewsFilter.querySelectorAll('.reviews-filter-item');
     for(var i = 0; i < filtersBtn.length; i++) {
@@ -107,8 +117,8 @@
   };
 
   /**
-   * @param {Array.<Object>} reviews
-   * @param {Filter} filter
+   * @param {function(Array.<Object>)} set reviews option
+   * @return {Array} return array reviews
    */
   var setFiltredActive = function(filter) {
 
@@ -129,7 +139,6 @@
         });
         break;
       case 'reviews-good':
-        //Сортировка по убыванию рейтига с 5
         temporaryArr = getReviewsArrCopy.filter(function(sortArrItem, i) {
           return getReviewsArrCopy[i].rating >= 3;
         });
@@ -158,7 +167,7 @@
   };
 
   /**
-   * @param {Filter} filter
+   * @param {function} reviews filter active
    */
   var setFilterActive = function(filter) {
 
@@ -166,7 +175,7 @@
     renderReviews(filteredReviews);
   };
 
-  /** @param {Array.<Object>} reviews */
+  /** @param {function(Array.<Object>)} Clear old html container set new array */
   var renderReviews = function(reviews) {
     reviewsContainer.innerHTML = '';
     reviews.forEach(function(data) {
@@ -174,6 +183,7 @@
     });
   };
 
+  /** @param {function(Array.<Object>)} */
   getReviews(function(loadedReviews) {
     getReviewsArr = loadedReviews;
     setFilterActive();
