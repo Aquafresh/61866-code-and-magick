@@ -130,13 +130,14 @@
         var currentDate = new Date();
         var maxDateRange = currentDate.setDate(currentDate.getDate() - 14);
         getReviewsArrCopy[1].date = '2016-03-01';
-        getReviewsArrCopy.filter(function(a) {
+        temporaryArr = getReviewsArrCopy.filter(function(a) {
           var reviewDate = Date.parse(a.date);
           return reviewDate > maxDateRange;
         });
-        getReviewsArrCopy.sort(function(a, b) {
+        temporaryArr.sort(function(a, b) {
           return Date.parse(b.date) - Date.parse(a.date);
         });
+        getReviewsArrCopy = temporaryArr;
         break;
       case 'reviews-good':
         temporaryArr = getReviewsArrCopy.filter(function(sortArrItem, i) {
@@ -161,6 +162,8 @@
           return a.review_usefulness - b.review_usefulness;
         });
         break;
+      default:
+        getReviewsArrCopy = getReviewsArr.slice(0);
     }
 
     return getReviewsArrCopy;
