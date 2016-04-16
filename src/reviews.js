@@ -188,7 +188,7 @@
   };
 
   /**
-   * @param  {Array.<Object>} loadedReviews)
+   * @param  {Array.<Object>} loadedReviews
    */
   getReviews(function(loadedReviews) {
     getReviewsArr = loadedReviews;

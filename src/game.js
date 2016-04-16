@@ -355,7 +355,6 @@
       window.addEventListener('keydown', this._pauseListener);
 
       this._drawPauseScreen();
-      this._cloudParallax();
     },
 
     /**
@@ -767,46 +766,69 @@
     },
 
     /**
-     * @param {scrollEvent} [set parallax scroll event]
      * @private
      */
     _cloudParallax: function() {
+
+      /**
+       * Clouds image containter
+       * @type {obj}
+       */
       var cloudsImg = document.querySelector('.header-clouds');
-      var defaultCloudPosition = 50;
+      cloudsImg.style.backgroundPosition = '0 0';
+
+      /**
+       * Custom clouds move speed
+       * @type {number}
+       */
+      var customSpeed = 5;
+
+      /**
+       * @type {number}
+       */
       var windowScrollOffset = this.pageYOffset;
-      cloudsImg.style.backgroundPosition = defaultCloudPosition - (windowScrollOffset / 10) + '%' + '0';
+      cloudsImg.style.backgroundPosition = (windowScrollOffset / customSpeed) + 'px ' + '0';
     },
 
     /**
-     * @param {scrollEvent} [check elelemnt on screen]
      * @private
      */
     _elemScreenCheck: function() {
-      /** Clouds image containter*/
+
+      /**
+       * Clouds image containter
+       * @type {obj}
+       */
       var cloudsImg = document.querySelector('.header-clouds');
-      /** Get clouds containter negative height*/
-      var cloudsImgHeightNegative = (cloudsImg.clientHeight * -1);
-      /** Get clouds containter position */
-      var cloudsImgPosition = cloudsImg.getBoundingClientRect().top;
-      /** Game demo containter*/
+
+       /**
+       * Get clouds containter position
+       * @type {number}
+       */
+      var cloudsImgPosition = cloudsImg.getBoundingClientRect().bottom;
+      /**
+       * Game demo containter
+       * @type {obj}
+       */
       var demoElem = document.querySelector('.demo');
-      /** Get game demo containter negative height*/
-      var demoElemHeightNegative = (demoElem.clientHeight * -1);
-      /** Get game demo containter position*/
-      var demoElemPosition = demoElem.getBoundingClientRect().top;
-      /** Set timeoutId*/
+
+      /**
+       * Get game demo containter position
+       * @type {number}
+       */
+      var demoElemPosition = demoElem.getBoundingClientRect().bottom;
       var scrollTimeout;
       clearTimeout(scrollTimeout);
 
       scrollTimeout = setTimeout(function() {
 
-        if(cloudsImgPosition < cloudsImgHeightNegative) {
+        if(cloudsImgPosition < 0) {
           window.removeEventListener('scroll', Game.prototype._cloudParallax);
-        } else if(cloudsImgPosition > cloudsImgHeightNegative) {
+        } else if(cloudsImgPosition > 0) {
           window.addEventListener('scroll', Game.prototype._cloudParallax);
         }
 
-        if(demoElemPosition < demoElemHeightNegative) {
+        if(demoElemPosition < 0) {
           game.setGameStatus(Game.Verdict.PAUSE);
         }
       }, 100);
