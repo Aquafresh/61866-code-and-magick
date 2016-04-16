@@ -355,6 +355,7 @@
       window.addEventListener('keydown', this._pauseListener);
 
       this._drawPauseScreen();
+      this._cloudParallax();
     },
 
     /**
@@ -755,15 +756,61 @@
     _initializeGameListeners: function() {
       window.addEventListener('keydown', this._onKeyDown);
       window.addEventListener('keyup', this._onKeyUp);
+      window.addEventListener('scroll', this._cloudParallax);
+      window.addEventListener('scroll', this._elemScreenCheck);
     },
 
     /** @private */
     _removeGameListeners: function() {
       window.removeEventListener('keydown', this._onKeyDown);
       window.removeEventListener('keyup', this._onKeyUp);
+    },
+
+    /**
+     * @param {scrollEvent} [set parallax scroll event]
+     * @private
+     */
+    _cloudParallax: function() {
+      var cloudsImg = document.querySelector('.header-clouds');
+      var defaultCloudPosition = 50;
+      var windowScrollOffset = this.pageYOffset;
+      cloudsImg.style.backgroundPosition = defaultCloudPosition - (windowScrollOffset / 10) + '%' + '0';
+    },
+
+    /**
+     * @param {scrollEvent} [check elelemnt on screen]
+     * @private
+     */
+    _elemScreenCheck: function() {
+      /** Clouds image containter*/
+      var cloudsImg = document.querySelector('.header-clouds');
+      /** Get clouds containter negative height*/
+      var cloudsImgHeightNegative = (cloudsImg.clientHeight * -1);
+      /** Get clouds containter position */
+      var cloudsImgPosition = cloudsImg.getBoundingClientRect().top;
+      /** Game demo containter*/
+      var demoElem = document.querySelector('.demo');
+      /** Get game demo containter negative height*/
+      var demoElemHeightNegative = (demoElem.clientHeight * -1);
+      /** Get game demo containter position*/
+      var demoElemPosition = demoElem.getBoundingClientRect().top;
+      /** Set timeoutId*/
+      var scrollTimeout;
+      clearTimeout(scrollTimeout);
+
+      scrollTimeout = setTimeout(function() {
+
+        if(cloudsImgPosition < cloudsImgHeightNegative) {
+          window.removeEventListener('scroll', Game.prototype._cloudParallax);
+        } else if(cloudsImgPosition > cloudsImgHeightNegative) {
+          window.addEventListener('scroll', Game.prototype._cloudParallax);
+        }
+
+        if(demoElemPosition < demoElemHeightNegative) {
+          game.setGameStatus(Game.Verdict.PAUSE);
+        }
+      }, 100);
     }
-
-
   };
 
   window.Game = Game;
