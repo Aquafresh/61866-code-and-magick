@@ -54,7 +54,7 @@
   };
 
   /**
-   * @param  {[Array.<Object>]} loadedReviews)
+   * @param  {Array.<Object>} loadedReviews)
    */
   getReviews(function(loadedReviews) {
     getReviewsArr = loadedReviews;
@@ -69,9 +69,8 @@
   }
 
   /**
-   * [getReviewBlock description]
-   * @param  {[Object]} data
-   * @param  {[HTMLElement]} container
+   * @param  {Object} data
+   * @param  {HTMLElement} container
    */
   var getReviewBlock = function(data, container) {
 
@@ -117,8 +116,8 @@
   };
 
   /**
-   * @param {[Array.<Object>]} filter
-   * @return {[Array.<Object>]} getReviewsArrCopy
+   * @param {Array.<Object>} filter
+   * @return {Array.<Object>} getReviewsArrCopy
    */
   var setFiltredActive = function(filter) {
 
@@ -170,7 +169,7 @@
   };
 
   /**
-   * @param {[Array.<Object>]} filter
+   * @param {Array.<Object>} filter
    */
   var setFilterActive = function(filter) {
 
@@ -179,8 +178,7 @@
   };
 
   /**
-   * [renderReviews description]
-   * @param  {[Array.<Object>]} reviews
+   * @param  {Array.<Object>} reviews
    */
   var renderReviews = function(reviews) {
     reviewsContainer.innerHTML = '';
@@ -189,9 +187,8 @@
     });
   };
 
-
   /**
-   * @param  {[Array.<Object>]} loadedReviews)
+   * @param  {Array.<Object>} loadedReviews
    */
   getReviews(function(loadedReviews) {
     getReviewsArr = loadedReviews;

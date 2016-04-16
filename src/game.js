@@ -755,15 +755,84 @@
     _initializeGameListeners: function() {
       window.addEventListener('keydown', this._onKeyDown);
       window.addEventListener('keyup', this._onKeyUp);
+      window.addEventListener('scroll', this._cloudParallax);
+      window.addEventListener('scroll', this._elemScreenCheck);
     },
 
     /** @private */
     _removeGameListeners: function() {
       window.removeEventListener('keydown', this._onKeyDown);
       window.removeEventListener('keyup', this._onKeyUp);
+    },
+
+    /**
+     * @private
+     */
+    _cloudParallax: function() {
+
+      /**
+       * Clouds image containter
+       * @type {obj}
+       */
+      var cloudsImg = document.querySelector('.header-clouds');
+      cloudsImg.style.backgroundPosition = '0 0';
+
+      /**
+       * Custom clouds move speed
+       * @type {number}
+       */
+      var customSpeed = 5;
+
+      /**
+       * @type {number}
+       */
+      var windowScrollOffset = this.pageYOffset;
+      cloudsImg.style.backgroundPosition = (windowScrollOffset / customSpeed) + 'px ' + '0';
+    },
+
+    /**
+     * @private
+     */
+    _elemScreenCheck: function() {
+
+      /**
+       * Clouds image containter
+       * @type {obj}
+       */
+      var cloudsImg = document.querySelector('.header-clouds');
+
+       /**
+       * Get clouds containter position
+       * @type {number}
+       */
+      var cloudsImgPosition = cloudsImg.getBoundingClientRect().bottom;
+      /**
+       * Game demo containter
+       * @type {obj}
+       */
+      var demoElem = document.querySelector('.demo');
+
+      /**
+       * Get game demo containter position
+       * @type {number}
+       */
+      var demoElemPosition = demoElem.getBoundingClientRect().bottom;
+      var scrollTimeout;
+      clearTimeout(scrollTimeout);
+
+      scrollTimeout = setTimeout(function() {
+
+        if(cloudsImgPosition < 0) {
+          window.removeEventListener('scroll', Game.prototype._cloudParallax);
+        } else if(cloudsImgPosition > 0) {
+          window.addEventListener('scroll', Game.prototype._cloudParallax);
+        }
+
+        if(demoElemPosition < 0) {
+          game.setGameStatus(Game.Verdict.PAUSE);
+        }
+      }, 100);
     }
-
-
   };
 
   window.Game = Game;
