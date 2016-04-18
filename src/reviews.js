@@ -5,22 +5,27 @@
 
   /**
    * Reviews html containter
-   * @type {obj}
+   * @type {elem}
    */
   var reviewsContainer = document.querySelector('.reviews-list');
   /**
    * Review html template
-   * @type {obj}
+   * @type {elem}
    */
   var reviewTemplate = document.querySelector('#review-template');
   /**
    * Sort filters containter
-   * @type {type}
+   * @type {elem}
    */
   var reviewsFilter = document.querySelector('.reviews-filter');
   /**
+   * Btn show more reviews
+   * @type {elem}
+   */
+  var btnMoreReviews = document.querySelector('.reviews-controls-item');
+  /**
    * Check exist html template
-   * @type {String}
+   * @type {boolean}
    */
   var templateContentExist = 'content' in reviewTemplate;
   /**
@@ -80,8 +85,6 @@
     }
   };
 
-
-
   function checkTemplateExist() {
     if (templateContentExist) {
       return reviewTemplate.content.querySelector('.review');
@@ -127,18 +130,17 @@
     }, 10000);
   };
 
-
   var setFilterEvent = function() {
-    var filtersBtn = reviewsFilter.querySelectorAll('.reviews-filter-item');
-    for(var i = 0; i < filtersBtn.length; i++) {
-      filtersBtn[i].onclick = function() {
-        setFilterActive(this.htmlFor);
-      };
-    }
+    reviewsFilter.addEventListener('click', function() {
+      btnMoreReviews.classList.remove('invisible');
+      var target = event.target;
+      var targetLabel = target.nextSibling;
+      setFilterActive(targetLabel.htmlFor);
+    });
   };
 
   /**
-   * @param {Array.<Object>} filter
+   * @param {string} filter
    * @return {Array.<Object>} getReviewsArrCopy
    */
   var setFiltredActive = function(filter) {
@@ -200,9 +202,9 @@
   };
 
   /**
-   * @param  {number} page
+   * @param {number} page
    * @param {boolean} replace
-   * @param  {Array.<Object>} reviews
+   * @param {Array.<Object>} reviews
    */
   var renderReviews = function(reviews, page, replace) {
     if (replace) {
@@ -218,11 +220,19 @@
   };
 
   var getMoreReviews = function() {
-    var btnMoreReviews = document.querySelector('.reviews-controls-item');
     btnMoreReviews.addEventListener('click', function() {
       pageNumber++;
       renderReviews(filteredReviews, pageNumber);
 
+      var reviewsArcticleLength = null;
+      var reviewsArrLength = null;
+      reviewsArcticleLength = reviewsContainer.children.length;
+      reviewsArrLength = filteredReviews.length;
+
+      if(reviewsArcticleLength >= reviewsArrLength) {
+
+        btnMoreReviews.classList.add('invisible');
+      }
     });
   };
 
