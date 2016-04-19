@@ -131,11 +131,13 @@
   };
 
   var setFilterEvent = function() {
-    reviewsFilter.addEventListener('click', function() {
+    reviewsFilter.addEventListener('click', function(event) {
       btnMoreReviews.classList.remove('invisible');
       var target = event.target;
-      var targetLabel = target.nextSibling;
-      setFilterActive(targetLabel.htmlFor);
+      var targetLabelCheck = target.classList.contains('reviews-filter-item');
+      if(targetLabelCheck) {
+        setFilterActive(target.htmlFor);
+      }
     });
   };
 
@@ -193,7 +195,8 @@
   };
 
   /**
-   * @param {Array.<Object>} filter
+   * @param {string} filter
+   * @param {Array.<Object>}
    */
   var setFilterActive = function(filter) {
     pageNumber = 0;
