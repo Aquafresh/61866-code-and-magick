@@ -3,16 +3,48 @@
 
 (function() {
 
-  /** Reviews html containter*/
+  /**
+   * Reviews html containter
+   * @type {element}
+   */
   var reviewsContainer = document.querySelector('.reviews-list');
-  /** Review html template*/
+  /**
+   * Review html template
+   * @type {element}
+   */
   var reviewTemplate = document.querySelector('#review-template');
-  /** Sort filters containter*/
+  /**
+   * Sort filters containter
+   * @type {element}
+   */
   var reviewsFilter = document.querySelector('.reviews-filter');
-  /** Check exist html template*/
+  /**
+   * Btn show more reviews
+   * @type {element}
+   */
+  var btnMoreReviews = document.querySelector('.reviews-controls-item');
+  /**
+   * Check exist html template
+   * @type {boolean}
+   */
   var templateContentExist = 'content' in reviewTemplate;
-  /** Get array from xhr*/
+  /**
+   * Get array from xhr
+   * @type {Array}
+   */
   var getReviewsArr = [];
+  /**
+   * Get array from filters
+   * @type {Array}
+   */
+  var filteredReviews = [];
+  /**
+   * Set page reviews number
+   * @type {Number}
+   */
+  var pageNumber = 0;
+  /** @constant {number} */
+  var PAGE_REVIEWS_SIZE = 3;
   /** @constant {Array} */
   var RATINGS = [
     'one',
@@ -53,13 +85,6 @@
     }
   };
 
-  /**
-   * @param  {Array.<Object>} loadedReviews)
-   */
-  getReviews(function(loadedReviews) {
-    getReviewsArr = loadedReviews;
-  });
-
   function checkTemplateExist() {
     if (templateContentExist) {
       return reviewTemplate.content.querySelector('.review');
@@ -70,7 +95,7 @@
 
   /**
    * @param  {Object} data
-   * @param  {HTMLElement} container
+   * @param  {element} container
    */
   var getReviewBlock = function(data, container) {
 
@@ -105,18 +130,15 @@
     }, 10000);
   };
 
-
   var setFilterEvent = function() {
-    var filtersBtn = reviewsFilter.querySelectorAll('.reviews-filter-item');
-    for(var i = 0; i < filtersBtn.length; i++) {
-      filtersBtn[i].onclick = function() {
-        setFilterActive(this.htmlFor);
-      };
-    }
+    reviewsFilter.addEventListener('change', function(event) {
+      btnMoreReviews.classList.remove('invisible');
+      setFilterActive(event.target.value);
+    });
   };
 
   /**
-   * @param {Array.<Object>} filter
+   * @param {string} filter
    * @return {Array.<Object>} getReviewsArrCopy
    */
   var setFiltredActive = function(filter) {
@@ -169,21 +191,47 @@
   };
 
   /**
-   * @param {Array.<Object>} filter
+   * @param {string} filter
+   * @param {Array.<Object>}
    */
   var setFilterActive = function(filter) {
-
-    var filteredReviews = setFiltredActive(filter);
-    renderReviews(filteredReviews);
+    pageNumber = 0;
+    filteredReviews = setFiltredActive(filter);
+    renderReviews(filteredReviews, pageNumber, true);
   };
 
   /**
-   * @param  {Array.<Object>} reviews
+   * @param {number} page
+   * @param {boolean} replace
+   * @param {Array.<Object>} reviews
    */
-  var renderReviews = function(reviews) {
-    reviewsContainer.innerHTML = '';
-    reviews.forEach(function(data) {
+  var renderReviews = function(reviews, page, replace) {
+    if (replace) {
+      reviewsContainer.innerHTML = '';
+    }
+
+    var from = page * PAGE_REVIEWS_SIZE;
+    var to = from + PAGE_REVIEWS_SIZE;
+
+    reviews.slice(from, to).forEach(function(data) {
       getReviewBlock(data, reviewsContainer);
+    });
+  };
+
+  var getMoreReviews = function() {
+    btnMoreReviews.addEventListener('click', function() {
+      pageNumber++;
+      renderReviews(filteredReviews, pageNumber);
+
+      var reviewsArcticleLength = null;
+      var reviewsArrLength = null;
+      reviewsArcticleLength = reviewsContainer.children.length;
+      reviewsArrLength = filteredReviews.length;
+
+      if(reviewsArcticleLength >= reviewsArrLength) {
+
+        btnMoreReviews.classList.add('invisible');
+      }
     });
   };
 
@@ -192,9 +240,13 @@
    */
   getReviews(function(loadedReviews) {
     getReviewsArr = loadedReviews;
-    setFilterActive();
     setFilterEvent();
-    renderReviews(getReviewsArr);
+    setFilterActive();
+    getMoreReviews();
   });
+
+
+
+  // getMoreReviews();
 
 })();
