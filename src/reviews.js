@@ -5,22 +5,22 @@
 
   /**
    * Reviews html containter
-   * @type {elem}
+   * @type {element}
    */
   var reviewsContainer = document.querySelector('.reviews-list');
   /**
    * Review html template
-   * @type {elem}
+   * @type {element}
    */
   var reviewTemplate = document.querySelector('#review-template');
   /**
    * Sort filters containter
-   * @type {elem}
+   * @type {element}
    */
   var reviewsFilter = document.querySelector('.reviews-filter');
   /**
    * Btn show more reviews
-   * @type {elem}
+   * @type {element}
    */
   var btnMoreReviews = document.querySelector('.reviews-controls-item');
   /**
@@ -95,7 +95,7 @@
 
   /**
    * @param  {Object} data
-   * @param  {HTMLElement} container
+   * @param  {element} container
    */
   var getReviewBlock = function(data, container) {
 
@@ -131,13 +131,9 @@
   };
 
   var setFilterEvent = function() {
-    reviewsFilter.addEventListener('click', function(event) {
+    reviewsFilter.addEventListener('change', function(event) {
       btnMoreReviews.classList.remove('invisible');
-      var target = event.target;
-      var targetLabelCheck = target.classList.contains('reviews-filter-item');
-      if(targetLabelCheck) {
-        setFilterActive(target.htmlFor);
-      }
+      setFilterActive(event.target.value);
     });
   };
 
