@@ -31,10 +31,10 @@ var getReviewsArr = [];
 var filteredReviews = [];
 /**
  * Set page reviews number
- * @type {Number}
+ * @type {number}
  */
 var pageNumber = 0;
-/** @constant {Number} */
+/** @constant {number} */
 var PAGE_REVIEWS_SIZE = 3;
 
 
@@ -46,7 +46,7 @@ var setFilterEvent = function() {
 };
 
 /**
- * @param {String} filter
+ * @param {string} filter
  * @return {Array.<Object>} getReviewsArrCopy
  */
 var setFiltredActive = function(filter) {
@@ -99,7 +99,7 @@ var setFiltredActive = function(filter) {
 };
 
 /**
- * @param {String} filter
+ * @param {string} filter
  * @param {Array.<Object>}
  */
 var setFilterActive = function(filter) {
@@ -109,8 +109,8 @@ var setFilterActive = function(filter) {
 };
 
 /**
- * @param {Number} page
- * @param {Boolean} replace
+ * @param {number} page
+ * @param {boolean} replace
  * @param {Array.<Object>} reviews
  */
 var renderReviews = function(reviews, page, replace) {

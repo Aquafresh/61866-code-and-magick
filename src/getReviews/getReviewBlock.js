@@ -32,7 +32,7 @@ module.exports = {
 
 	/**
 	 * @param  {Object} data
-	 * @param  {element} container
+	 * @param  {Element} container
 	 */
   getReviewBlock: function getReviewBlock(data, container) {
 
