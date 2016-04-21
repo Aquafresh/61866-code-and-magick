@@ -1,2 +1,2 @@
 src/check.js
-src/*.min.js
+src/game/*.min.js
