@@ -1,6 +1,5 @@
 'use strict';
 
-require('./check');
 require('./form');
 require('./game/game');
 require('./getReviews/getReviews');
