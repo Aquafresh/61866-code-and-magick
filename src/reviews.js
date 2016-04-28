@@ -1,8 +1,7 @@
-
 'use strict';
 
 var getReviews = require('./getReviews/getReviews');
-var getReviewBlock = require('./getReviews/getReviewBlock');
+var Reviews = require('./getReviews/ReviewsConstructor');
 
 /**
  * Reviews html containter
@@ -30,13 +29,17 @@ var getReviewsArr = [];
  */
 var filteredReviews = [];
 /**
+ * Save rendered array reviews
+ * @type {Array}
+ */
+var renderedReview = [];
+/**
  * Set page reviews number
  * @type {number}
  */
 var pageNumber = 0;
 /** @constant {number} */
 var PAGE_REVIEWS_SIZE = 3;
-
 
 var setFilterEvent = function() {
   reviewsFilter.addEventListener('change', function(event) {
@@ -114,15 +117,17 @@ var setFilterActive = function(filter) {
  * @param {Array.<Object>} reviews
  */
 var renderReviews = function(reviews, page, replace) {
-  if (replace) {
-    reviewsContainer.innerHTML = '';
+  if(replace) {
+    renderedReview.forEach(function(reviewElement) {
+      reviewElement.remove();
+    });
+    renderedReview = [];
   }
 
   var from = page * PAGE_REVIEWS_SIZE;
   var to = from + PAGE_REVIEWS_SIZE;
-
   reviews.slice(from, to).forEach(function(data) {
-    getReviewBlock.getReviewBlock(data, reviewsContainer);
+    renderedReview.push(new Reviews(data, reviewsContainer));
   });
 };
 
@@ -152,5 +157,3 @@ getReviews(function(loadedReviews) {
   setFilterActive();
   getMoreReviews();
 });
-
-

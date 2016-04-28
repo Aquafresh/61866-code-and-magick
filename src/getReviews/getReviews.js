@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * Sort filters containter
+ * Sort filters container
  * @type {Element}
  */
 var reviewsFilter = document.querySelector('.reviews-filter');
