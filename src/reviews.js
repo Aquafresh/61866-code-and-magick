@@ -41,7 +41,6 @@ var pageNumber = 0;
 /** @constant {number} */
 var PAGE_REVIEWS_SIZE = 3;
 
-
 var setFilterEvent = function() {
   reviewsFilter.addEventListener('change', function(event) {
     btnMoreReviews.classList.remove('invisible');
@@ -118,9 +117,11 @@ var setFilterActive = function(filter) {
  * @param {Array.<Object>} reviews
  */
 var renderReviews = function(reviews, page, replace) {
-
-  if (replace) {
-    reviewsContainer.innerHTML = '';
+  if(replace) {
+    renderedReview.forEach(function(reviewElement) {
+      reviewElement.remove();
+    });
+    renderedReview = [];
   }
 
   var from = page * PAGE_REVIEWS_SIZE;
@@ -128,7 +129,6 @@ var renderReviews = function(reviews, page, replace) {
   reviews.slice(from, to).forEach(function(data) {
     renderedReview.push(new Reviews(data, reviewsContainer));
   });
-
 };
 
 var getMoreReviews = function() {

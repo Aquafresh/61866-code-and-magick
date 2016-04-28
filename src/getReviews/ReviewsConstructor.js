@@ -4,15 +4,22 @@ var getReviewBlock = require('./getReviewBlock');
 
 /**
  * @param {Object} data
- * @param {Object} container
+ * @param {Element} container
+ * @constructor
  */
 function Review(data, container) {
 
   this.data = data;
   this.element = getReviewBlock(this.data);
+  var currentElement = this.element;
 
   this.onReviewClick = function(event) {
+    var answerNegative = currentElement.querySelector('.review-quiz-answer-no');
+    var answerPositive = currentElement.querySelector('.review-quiz-answer-yes');
+
     if(event.target.classList.contains('review-quiz-answer')) {
+      answerNegative.classList.remove('review-quiz-answer-active');
+      answerPositive.classList.remove('review-quiz-answer-active');
       event.target.classList.add('review-quiz-answer-active');
     }
   };
