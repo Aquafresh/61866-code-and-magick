@@ -126,15 +126,13 @@ var Gallery = function(galleryWrap, popupGallery, imageWrap) {
   };
 
   /**
-   * @param  {number} number
+   * @param  {string} number
    */
   this.showImage = function(number) {
-    var arrayBorder = 1;
-
-    if(+number + arrayBorder > imageAttrArray.length) {
+    if(+number + 1 > imageAttrArray.length) {
       number = 0;
     } else if(number < 0) {
-      number = imageAttrArray.length - arrayBorder;
+      number = imageAttrArray.length - 1;
     }
 
     popupGalleryImg.src = imageAttrArray[number];
@@ -143,10 +141,9 @@ var Gallery = function(galleryWrap, popupGallery, imageWrap) {
   };
 
   /**
-   * @param  {number} number
+   * @param  {string} number
    */
   this.galleryActive = function(number) {
-
     popupGallery.classList.remove('invisible');
     popupGalleryImgContainer.appendChild(popupGalleryImg);
     self.showImage(number);
