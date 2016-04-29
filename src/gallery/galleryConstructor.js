@@ -4,6 +4,7 @@
 /**
  * @param {Element} galleryWrap
  * @param {Element} popupGallery
+ * @param {Array.<Object>} imageWrap
  * @constructor
  */
 var Gallery = function(galleryWrap, popupGallery, imageWrap) {
