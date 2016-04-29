@@ -6,11 +6,8 @@
  * @param {Element} popupGallery
  * @constructor
  */
-var Gallery = function(galleryWrap, popupGallery) {
-  /**
-   * @type {Element}
-   */
-  var imageWrap = galleryWrap.querySelectorAll('.photogallery-image');
+var Gallery = function(galleryWrap, popupGallery, imageWrap) {
+
   /**
    * @type {Element}
    */
@@ -20,16 +17,16 @@ var Gallery = function(galleryWrap, popupGallery) {
    */
   var popupGalleryImgContainer = popupGallery.querySelector('.overlay-gallery-preview');
   /**
-    * @type {Element}
-    */
+   * @type {Element}
+   */
   var popupGalleryCount = popupGallery.querySelector('.preview-number-current');
   /**
-    * @type {Element}
-    */
+   * @type {Element}
+   */
   var popupGalleryTotal = popupGallery.querySelector('.preview-number-total');
   /**
-    * @type {Array}
-    */
+   * @type {Element}
+   */
   var imageAttrArray = [];
   var popupGalleryImg = new Image();
 
