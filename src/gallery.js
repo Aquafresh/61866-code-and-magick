@@ -34,122 +34,133 @@ var popupGalleryTotal = document.querySelector('.preview-number-total');
 var imageAttrArray = [];
 /**
  * @type {Object}
+ * @constructor
  */
 var popupGalleryImg = new Image();
 /**
  * @type {Object}
+ * @constructor
  */
-var popupGalleryEvent = {
+var galleryConstructor = new Gallery();
 
-  _popupGalleryNavBtn: function(event) {
+
+galleryConstructor.getImageSrc();
+galleryConstructor.getImageNumber();
+galleryConstructor.setImageAttr();
+
+/**
+ * @constructor
+ */
+function Gallery() {
+
+  var self = this;
+
+  this.getImageSrc = function() {
+    for(var i = 0; i < mainGalleryImage.length; i++) {
+      var getImageAttr = mainGalleryImage[i].getAttribute('src');
+      imageAttrArray.push(getImageAttr);
+    }
+  };
+
+  this.setImageAttr = function() {
+    for(var i = 0; i < mainGalleryImageContainer.length; i++) {
+
+      mainGalleryImageContainer[i].setAttribute('data-number', i);
+    }
+  };
+
+  this.getImageNumber = function() {
+
+    var elemClickNumber;
+
+    mainGallery.addEventListener('click', function(event) {
+      event.preventDefault();
+      var currentTarget = event.target;
+      if(this !== currentTarget) {
+        elemClickNumber = currentTarget.parentNode.getAttribute('data-number');
+        self.galleryActive(elemClickNumber);
+      }
+    });
+  };
+
+  this.getCurrentImageIndex = function() {
+    var currentImage = document.querySelector('.overlay-gallery-preview img');
+    var currentImgSrc = currentImage.getAttribute('src');
+    var currentElemNumber = imageAttrArray.indexOf(currentImgSrc);
+
+    return currentElemNumber;
+  };
+
+  this._popupGalleryNavBtn = function(event) {
     var galleryBtnPrev = document.querySelector('.overlay-gallery-control-left');
     var galleryBtnNext = document.querySelector('.overlay-gallery-control-right');
 
     if(event.target === galleryBtnPrev) {
-      var number = getCurrentImageIndex();
+      var number = self.getCurrentImageIndex();
       number--;
-      showImage(number);
+      self.showImage(number);
     } else if (event.target === galleryBtnNext) {
-      number = getCurrentImageIndex();
+      number = self.getCurrentImageIndex();
       number++;
-      showImage(number);
+      self.showImage(number);
     }
-  },
+  };
 
-  _onDocumentKeyDown: function(event) {
+  this._onDocumentKeyDown = function(event) {
     if(event.keyCode === 27) {
       popupGallery.classList.add('invisible');
       popupGalleryImgContainer.lastChild.remove();
-      popupGalleryEvent._removeListeners();
+      self._removeListeners();
     }
-  },
+  };
 
-  _onCloseClick: function(event) {
+  this._onCloseClick = function(event) {
     var btnClose = document.querySelector('.overlay-gallery-close');
     if(event.target === btnClose) {
 
       popupGallery.classList.add('invisible');
       popupGalleryImgContainer.lastChild.remove();
-      popupGalleryEvent._removeListeners();
+      self._removeListeners();
     }
-  },
+  };
 
-  _initListeners: function() {
-    popupGallery.addEventListener('click', this._popupGalleryNavBtn);
-    popupGallery.addEventListener('click', this._onCloseClick);
-    window.addEventListener('keydown', this._onDocumentKeyDown);
-  },
+  this._initListeners = function() {
+    popupGallery.addEventListener('click', self._popupGalleryNavBtn);
+    popupGallery.addEventListener('click', self._onCloseClick);
+    window.addEventListener('keydown', self._onDocumentKeyDown);
+  };
 
-  _removeListeners: function() {
-    popupGallery.removeEventListener('click', this._popupGalleryNavBtn);
-    popupGallery.removeEventListener('click', this._onCloseClick);
-    window.removeEventListener('keydown', this._onDocumentKeyDown);
-  }
-};
+  this._removeListeners = function() {
+    popupGallery.removeEventListener('click', self._popupGalleryNavBtn);
+    popupGallery.removeEventListener('click', self._onCloseClick);
+    window.removeEventListener('keydown', self._onDocumentKeyDown);
+  };
 
-function getImageSrc() {
-  for(var i = 0; i < mainGalleryImage.length; i++) {
-    var getImageAttr = mainGalleryImage[i].getAttribute('src');
-    imageAttrArray.push(getImageAttr);
-  }
-}
-/**
- * @param  {string} number
- */
-function galleryActive(number) {
-  popupGallery.classList.remove('invisible');
-  popupGalleryImgContainer.appendChild(popupGalleryImg);
-  showImage(number);
-  popupGalleryEvent._initListeners();
-}
-/**
- * @param  {string} number
- */
-function showImage(number) {
-  var arrayBorder = 1;
+  this.showImage = function(number) {
+    var arrayBorder = 1;
 
-  if(+number + arrayBorder > imageAttrArray.length) {
-    number = 0;
-  } else if(number < 0) {
-    number = imageAttrArray.length - arrayBorder;
-  }
-
-  popupGalleryImg.src = imageAttrArray[number];
-  popupGalleryCount.innerHTML = +number + 1;
-  popupGalleryTotal.innerHTML = +imageAttrArray.length;
-}
-
-function setImageAttr() {
-  for(var i = 0; i < mainGalleryImageContainer.length; i++) {
-
-    mainGalleryImageContainer[i].setAttribute('data-number', i);
-  }
-}
-
-function getImageNumber() {
-
-  var elemClickNumber;
-
-  mainGallery.addEventListener('click', function(event) {
-    event.preventDefault();
-    var currentTarget = event.target;
-    if(this !== currentTarget) {
-      elemClickNumber = currentTarget.parentNode.getAttribute('data-number');
-      galleryActive(elemClickNumber);
+    if(+number + arrayBorder > imageAttrArray.length) {
+      number = 0;
+    } else if(number < 0) {
+      number = imageAttrArray.length - arrayBorder;
     }
-  });
-}
-/**
- * @return {number}
- */
-function getCurrentImageIndex() {
-  var currentImage = document.querySelector('.overlay-gallery-preview img');
-  var currentImgSrc = currentImage.getAttribute('src');
-  var currentElemNumber = imageAttrArray.indexOf(currentImgSrc);
 
-  return currentElemNumber;
+    popupGalleryImg.src = imageAttrArray[number];
+    popupGalleryCount.innerHTML = +number + 1;
+    popupGalleryTotal.innerHTML = +imageAttrArray.length;
+  };
+
+  this.galleryActive = function(number) {
+
+    popupGallery.classList.remove('invisible');
+    popupGalleryImgContainer.appendChild(popupGalleryImg);
+
+    galleryConstructor.showImage(number);
+
+    galleryConstructor._initListeners();
+  };
 }
 
-getImageSrc();
-setImageAttr();
-getImageNumber();
+
+
+
