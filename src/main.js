@@ -7,5 +7,5 @@ require('./getReviews/getReviews');
 require('./getReviews/getReviewBlock');
 require('./getReviews/ReviewsConstructor');
 require('./reviews');
-require('./gallery');
-
+require('./gallery/gallery');
+require('./gallery/galleryConstructor');

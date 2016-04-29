@@ -1,71 +1,25 @@
 'use strict';
 
 /**
- * @type {Element}
- */
-var mainGallery = document.querySelector('.photogallery');
-/**
- * @type {Element}
- */
-var mainGalleryImageContainer = document.querySelectorAll('.photogallery-image');
-/**
- * @type {Element}
- */
-var mainGalleryImage = document.querySelectorAll('.photogallery-image img');
-/**
- * @type {Element}
- */
-var popupGallery = document.querySelector('.overlay-gallery');
-/**
- * @type {Element}
- */
-var popupGalleryImgContainer = document.querySelector('.overlay-gallery-preview');
-/**
- * @type {Element}
- */
-var popupGalleryCount = document.querySelector('.preview-number-current');
-/**
- * @type {Element}
- */
-var popupGalleryTotal = document.querySelector('.preview-number-total');
-/**
- * @type {Array}
- */
-var imageAttrArray = [];
-/**
- * @type {Object}
  * @constructor
  */
-var popupGalleryImg = new Image();
-/**
- * @type {Object}
- * @constructor
- */
-var galleryConstructor = new Gallery();
-
-
-galleryConstructor.getImageSrc();
-galleryConstructor.getImageNumber();
-galleryConstructor.setImageAttr();
-
-/**
- * @constructor
- */
-function Gallery() {
+var Gallery = function(mainGalleryImageList, imageWrap, galleryWrap, popupGallery, popupGalleryImgContainer, popupGalleryCount, popupGalleryTotal) {
 
   var self = this;
+  var imageAttrArray = [];
+  var popupGalleryImg = new Image();
 
   this.getImageSrc = function() {
-    for(var i = 0; i < mainGalleryImage.length; i++) {
-      var getImageAttr = mainGalleryImage[i].getAttribute('src');
+    for(var i = 0; i < mainGalleryImageList.length; i++) {
+      var getImageAttr = mainGalleryImageList[i].getAttribute('src');
       imageAttrArray.push(getImageAttr);
     }
   };
 
   this.setImageAttr = function() {
-    for(var i = 0; i < mainGalleryImageContainer.length; i++) {
+    for(var i = 0; i < imageWrap.length; i++) {
 
-      mainGalleryImageContainer[i].setAttribute('data-number', i);
+      imageWrap[i].setAttribute('data-number', i);
     }
   };
 
@@ -73,7 +27,7 @@ function Gallery() {
 
     var elemClickNumber;
 
-    mainGallery.addEventListener('click', function(event) {
+    galleryWrap.addEventListener('click', function(event) {
       event.preventDefault();
       var currentTarget = event.target;
       if(this !== currentTarget) {
@@ -154,13 +108,13 @@ function Gallery() {
 
     popupGallery.classList.remove('invisible');
     popupGalleryImgContainer.appendChild(popupGalleryImg);
-
-    galleryConstructor.showImage(number);
-
-    galleryConstructor._initListeners();
+    self.showImage(number);
+    self._initListeners();
   };
-}
 
+  this.getImageSrc();
+  this.getImageNumber();
+  this.setImageAttr();
+};
 
-
-
+module.exports = Gallery;
