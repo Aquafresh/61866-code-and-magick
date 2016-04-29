@@ -9,7 +9,7 @@
 var Gallery = function(galleryWrap, popupGallery, imageWrap) {
 
   /**
-   * @type {Element}
+   * @type {Array.<Object>}
    */
   var mainGalleryImageList = galleryWrap.querySelectorAll('.photogallery-image img');
   /**
@@ -25,14 +25,13 @@ var Gallery = function(galleryWrap, popupGallery, imageWrap) {
    */
   var popupGalleryTotal = popupGallery.querySelector('.preview-number-total');
   /**
-   * @type {Element}
+   * @type {Array}
    */
   var imageAttrArray = [];
   var popupGalleryImg = new Image();
 
   var self = this;
 
-  /** @private */
   this.getImageSrc = function() {
     for(var i = 0; i < mainGalleryImageList.length; i++) {
       var getImageAttr = mainGalleryImageList[i].getAttribute('src');
@@ -40,7 +39,6 @@ var Gallery = function(galleryWrap, popupGallery, imageWrap) {
     }
   };
 
-  /** @private */
   this.setImageAttr = function() {
     for(var i = 0; i < imageWrap.length; i++) {
 
@@ -48,7 +46,6 @@ var Gallery = function(galleryWrap, popupGallery, imageWrap) {
     }
   };
 
-  /** @private */
   this.getImageNumber = function() {
 
     var elemClickNumber;
@@ -64,7 +61,6 @@ var Gallery = function(galleryWrap, popupGallery, imageWrap) {
   };
 
   /**
-   * @private
    * @return {number} currentElemNumber
    */
   this.getCurrentImageIndex = function() {
@@ -76,7 +72,6 @@ var Gallery = function(galleryWrap, popupGallery, imageWrap) {
   };
 
   /**
-   * @private
    * @param  {Event} event
    */
   this._popupGalleryNavBtn = function(event) {
@@ -95,7 +90,6 @@ var Gallery = function(galleryWrap, popupGallery, imageWrap) {
   };
 
   /**
-   * @private
    * @param  {Event} event
    */
   this._onDocumentKeyDown = function(event) {
@@ -107,7 +101,6 @@ var Gallery = function(galleryWrap, popupGallery, imageWrap) {
   };
 
   /**
-   * @private
    * @param  {Event} event
    */
   this._onCloseClick = function(event) {
@@ -120,14 +113,12 @@ var Gallery = function(galleryWrap, popupGallery, imageWrap) {
     }
   };
 
-  /** @private */
   this._initListeners = function() {
     popupGallery.addEventListener('click', self._popupGalleryNavBtn);
     popupGallery.addEventListener('click', self._onCloseClick);
     window.addEventListener('keydown', self._onDocumentKeyDown);
   };
 
-  /** @private */
   this._removeListeners = function() {
     popupGallery.removeEventListener('click', self._popupGalleryNavBtn);
     popupGallery.removeEventListener('click', self._onCloseClick);
@@ -135,7 +126,6 @@ var Gallery = function(galleryWrap, popupGallery, imageWrap) {
   };
 
   /**
-   * @private
    * @param  {number} number
    */
   this.showImage = function(number) {
@@ -153,7 +143,6 @@ var Gallery = function(galleryWrap, popupGallery, imageWrap) {
   };
 
   /**
-   * @private
    * @param  {number} number
    */
   this.galleryActive = function(number) {

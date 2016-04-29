@@ -30,11 +30,11 @@ function checkTemplateExist() {
   }
 }
 
-	/**
-	 * @param  {Object} data
-	 * @param  {Element} container
-   * @return {Object} element
-	 */
+/**
+ * @param  {Object} data
+ * @param  {Element} container
+ * @return {Object} element
+ */
 function getReviewBlock(data) {
   var templateExist = checkTemplateExist();
   var element = templateExist.cloneNode(true);

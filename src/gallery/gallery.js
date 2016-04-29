@@ -11,7 +11,7 @@ var popupGallery = document.querySelector('.overlay-gallery');
  */
 var mainGallery = document.querySelector('.photogallery');
 /**
- * @type {Element}
+ * @type {Array.<Object>}
  */
 var mainGalleryImageWrap = document.querySelectorAll('.photogallery-image');
 /**
