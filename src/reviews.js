@@ -40,11 +40,17 @@ var renderedReview = [];
 var pageNumber = 0;
 /** @constant {number} */
 var PAGE_REVIEWS_SIZE = 3;
+/**
+ * @type {string}
+ */
+var getSaveFilter = localStorage.getItem('filterValue');
+
 
 var setFilterEvent = function() {
   reviewsFilter.addEventListener('change', function(event) {
     btnMoreReviews.classList.remove('invisible');
     setFilterActive(event.target.value);
+    setValueFilterStorage(event.target.value);
   });
 };
 
@@ -154,6 +160,30 @@ var getMoreReviews = function() {
 getReviews(function(loadedReviews) {
   getReviewsArr = loadedReviews;
   setFilterEvent();
-  setFilterActive();
+  if(getSaveFilter !== null) {
+    setFilterActive(getSaveFilter);
+
+    setFilterTriggerActive(getSaveFilter);
+  } else {
+    setFilterActive();
+  }
   getMoreReviews();
 });
+
+/**
+ * @param {string} value
+ */
+function setValueFilterStorage(value) {
+  localStorage.setItem('filterValue', value);
+}
+
+function setFilterTriggerActive() {
+  var filterTriggerList = reviewsFilter.querySelectorAll('input');
+
+  for (var i = 0; i < filterTriggerList.length; i++) {
+    if(filterTriggerList[i].value === getSaveFilter) {
+
+      filterTriggerList[i].setAttribute('checked', true);
+    }
+  }
+}
