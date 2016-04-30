@@ -29,6 +29,10 @@ var Gallery = function(galleryWrap, popupGallery, imageWrap) {
    * @type {Array}
    */
   var imageAttrArray = [];
+  /**
+   * @type {Object}
+   * @constructor
+   */
   var popupGalleryImg = new Image();
 
   var self = this;
@@ -55,7 +59,7 @@ var Gallery = function(galleryWrap, popupGallery, imageWrap) {
       event.preventDefault();
       var currentTarget = event.target;
       if(this !== currentTarget) {
-        elemClickNumber = currentTarget.parentNode.getAttribute('data-number');
+        elemClickNumber = Number(currentTarget.parentNode.getAttribute('data-number'));
         self.galleryActive(elemClickNumber);
       }
     });
@@ -127,22 +131,22 @@ var Gallery = function(galleryWrap, popupGallery, imageWrap) {
   };
 
   /**
-   * @param  {string} number
+   * @param  {number} number
    */
   this.showImage = function(number) {
-    if(+number + 1 > imageAttrArray.length) {
+    if(number + 1 > imageAttrArray.length) {
       number = 0;
     } else if(number < 0) {
       number = imageAttrArray.length - 1;
     }
 
     popupGalleryImg.src = imageAttrArray[number];
-    popupGalleryCount.innerHTML = +number + 1;
-    popupGalleryTotal.innerHTML = +imageAttrArray.length;
+    popupGalleryCount.innerHTML = number + 1;
+    popupGalleryTotal.innerHTML = imageAttrArray.length;
   };
 
   /**
-   * @param  {string} number
+   * @param  {number} number
    */
   this.galleryActive = function(number) {
     popupGallery.classList.remove('invisible');
