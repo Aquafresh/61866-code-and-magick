@@ -34,17 +34,13 @@ var Gallery = function(galleryWrap, popupGallery, imageWrap) {
    * @constructor
    */
   var popupGalleryImg = new Image();
-  /**
-   * @type {Object}
-   */
-  var location = window.location;
-  /**
-   * @type {Array}
-   */
-  var hashGalleryArray = [];
 
   var self = this;
-
+// ---- ----- -------- --------
+  var hashGalleryArray = [];
+  var pathHash = '#photo/';
+  var location = window.location;
+// ---- ----- -------- --------
   this.getImageSrc = function() {
     for(var i = 0; i < mainGalleryImageList.length; i++) {
       var getImageAttr = mainGalleryImageList[i].getAttribute('src');
@@ -54,13 +50,13 @@ var Gallery = function(galleryWrap, popupGallery, imageWrap) {
 
   this.setImageAttr = function() {
     for(var i = 0; i < imageWrap.length; i++) {
-
       imageWrap[i].setAttribute('data-number', i);
-      hashGalleryArray.push('#photo/img/screenshots/' + (i + 1) + '.png');
+      hashGalleryArray.push('img/screenshots/' + (i + 1) + '.png');
     }
   };
 
   this.getImageNumber = function() {
+
     var elemClickNumber;
 
     galleryWrap.addEventListener('click', function(event) {
@@ -68,8 +64,8 @@ var Gallery = function(galleryWrap, popupGallery, imageWrap) {
       var currentTarget = event.target;
       if(this !== currentTarget) {
         elemClickNumber = Number(currentTarget.parentNode.getAttribute('data-number'));
-        self._initListeners();
-        location.hash = hashGalleryArray[elemClickNumber];
+        self.galleryActive(elemClickNumber);
+        location.hash = pathHash + hashGalleryArray[elemClickNumber];
       }
     });
   };
@@ -95,12 +91,10 @@ var Gallery = function(galleryWrap, popupGallery, imageWrap) {
     if(event.target === galleryBtnPrev) {
       var number = self.getCurrentImageIndex();
       number--;
-      self.changeHash(number);
       self.showImage(number);
     } else if (event.target === galleryBtnNext) {
       number = self.getCurrentImageIndex();
       number++;
-      self.changeHash(number);
       self.showImage(number);
     }
   };
@@ -132,14 +126,14 @@ var Gallery = function(galleryWrap, popupGallery, imageWrap) {
   };
 
   this._initListeners = function() {
-    window.addEventListener('hashchange', self.showHashImage);
+    window.addEventListener('hashchange', self.checkHash);
     popupGallery.addEventListener('click', self._popupGalleryNavBtn);
     popupGallery.addEventListener('click', self._onCloseClick);
     window.addEventListener('keydown', self._onDocumentKeyDown);
   };
 
   this._removeListeners = function() {
-    window.removeEventListener('hashchange', self.showHashImage);
+    window.addEventListener('hashchange', self.checkHash);
     popupGallery.removeEventListener('click', self._popupGalleryNavBtn);
     popupGallery.removeEventListener('click', self._onCloseClick);
     window.removeEventListener('keydown', self._onDocumentKeyDown);
@@ -160,29 +154,6 @@ var Gallery = function(galleryWrap, popupGallery, imageWrap) {
     popupGalleryTotal.innerHTML = imageAttrArray.length;
   };
 
-  this.showHashImage = function() {
-    for (var i = 0; i < hashGalleryArray.length; i++) {
-      if(hashGalleryArray[i] === location.hash) {
-        popupGallery.classList.remove('invisible');
-        popupGalleryImgContainer.appendChild(popupGalleryImg);
-        self.showImage(i);
-      }
-    }
-  };
-
-  /**
-   * @param  {number} number
-   */
-  this.changeHash = function(number) {
-    if(number + 1 > imageAttrArray.length) {
-      number = 0;
-    } else if(number < 0) {
-      number = imageAttrArray.length - 1;
-    }
-
-    location.hash = hashGalleryArray[number];
-  };
-
   /**
    * @param  {number} number
    */
@@ -193,10 +164,23 @@ var Gallery = function(galleryWrap, popupGallery, imageWrap) {
     self._initListeners();
   };
 
+  this.checkHash = function() {
+    var currentHash = location.hash;
+    var regular = /#photo\/(\S+)/;
+    var hashFound = currentHash.match(regular);
+
+    for (var i = 0; i < imageAttrArray.length; i++) {
+      if(imageAttrArray[i] === hashFound[1]) {
+        popupGallery.classList.remove('invisible');
+        popupGalleryImgContainer.appendChild(popupGalleryImg);
+        self.showImage(i);
+      }
+    }
+  };
+
   this.getImageSrc();
   this.getImageNumber();
   this.setImageAttr();
-  this.showHashImage();
 };
 
 module.exports = Gallery;
