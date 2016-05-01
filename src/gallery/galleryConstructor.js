@@ -34,6 +34,14 @@ var Gallery = function(galleryWrap, popupGallery, imageWrap) {
    * @constructor
    */
   var popupGalleryImg = new Image();
+  /**
+   * @type {Object}
+   */
+  var location = window.location;
+  /**
+   * @type {Array}
+   */
+  var hashGalleryArray = [];
 
   var self = this;
 
@@ -48,11 +56,11 @@ var Gallery = function(galleryWrap, popupGallery, imageWrap) {
     for(var i = 0; i < imageWrap.length; i++) {
 
       imageWrap[i].setAttribute('data-number', i);
+      hashGalleryArray.push('#photo/img/screenshots/' + (i + 1) + '.png');
     }
   };
 
   this.getImageNumber = function() {
-
     var elemClickNumber;
 
     galleryWrap.addEventListener('click', function(event) {
@@ -60,7 +68,8 @@ var Gallery = function(galleryWrap, popupGallery, imageWrap) {
       var currentTarget = event.target;
       if(this !== currentTarget) {
         elemClickNumber = Number(currentTarget.parentNode.getAttribute('data-number'));
-        self.galleryActive(elemClickNumber);
+        self._initListeners();
+        location.hash = hashGalleryArray[elemClickNumber];
       }
     });
   };
@@ -86,10 +95,12 @@ var Gallery = function(galleryWrap, popupGallery, imageWrap) {
     if(event.target === galleryBtnPrev) {
       var number = self.getCurrentImageIndex();
       number--;
+      self.changeHash(number);
       self.showImage(number);
     } else if (event.target === galleryBtnNext) {
       number = self.getCurrentImageIndex();
       number++;
+      self.changeHash(number);
       self.showImage(number);
     }
   };
@@ -101,6 +112,7 @@ var Gallery = function(galleryWrap, popupGallery, imageWrap) {
     if(event.keyCode === 27) {
       popupGallery.classList.add('invisible');
       popupGalleryImgContainer.lastChild.remove();
+      history.pushState(null, null, window.location.pathname);
       self._removeListeners();
     }
   };
@@ -114,17 +126,20 @@ var Gallery = function(galleryWrap, popupGallery, imageWrap) {
 
       popupGallery.classList.add('invisible');
       popupGalleryImgContainer.lastChild.remove();
+      history.pushState(null, null, window.location.pathname);
       self._removeListeners();
     }
   };
 
   this._initListeners = function() {
+    window.addEventListener('hashchange', self.showHashImage);
     popupGallery.addEventListener('click', self._popupGalleryNavBtn);
     popupGallery.addEventListener('click', self._onCloseClick);
     window.addEventListener('keydown', self._onDocumentKeyDown);
   };
 
   this._removeListeners = function() {
+    window.removeEventListener('hashchange', self.showHashImage);
     popupGallery.removeEventListener('click', self._popupGalleryNavBtn);
     popupGallery.removeEventListener('click', self._onCloseClick);
     window.removeEventListener('keydown', self._onDocumentKeyDown);
@@ -145,6 +160,29 @@ var Gallery = function(galleryWrap, popupGallery, imageWrap) {
     popupGalleryTotal.innerHTML = imageAttrArray.length;
   };
 
+  this.showHashImage = function() {
+    for (var i = 0; i < hashGalleryArray.length; i++) {
+      if(hashGalleryArray[i] === location.hash) {
+        popupGallery.classList.remove('invisible');
+        popupGalleryImgContainer.appendChild(popupGalleryImg);
+        self.showImage(i);
+      }
+    }
+  };
+
+  /**
+   * @param  {number} number
+   */
+  this.changeHash = function(number) {
+    if(number + 1 > imageAttrArray.length) {
+      number = 0;
+    } else if(number < 0) {
+      number = imageAttrArray.length - 1;
+    }
+
+    location.hash = hashGalleryArray[number];
+  };
+
   /**
    * @param  {number} number
    */
@@ -158,6 +196,7 @@ var Gallery = function(galleryWrap, popupGallery, imageWrap) {
   this.getImageSrc();
   this.getImageNumber();
   this.setImageAttr();
+  this.showHashImage();
 };
 
 module.exports = Gallery;
