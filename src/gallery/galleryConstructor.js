@@ -73,7 +73,7 @@ var Gallery = function(galleryWrap, popupGallery, imageWrap) {
       var currentTarget = event.target;
       if(this !== currentTarget) {
         elemClickNumber = Number(currentTarget.parentNode.getAttribute('data-number'));
-        self.galleryActive(elemClickNumber);
+        self.galleryActive(elemClickNumber, hashGalleryArray[elemClickNumber]);
         location.hash = pathHash + hashGalleryArray[elemClickNumber];
       }
     });
@@ -83,6 +83,7 @@ var Gallery = function(galleryWrap, popupGallery, imageWrap) {
    * @return {number} currentElemNumber
    */
   this.getCurrentImageIndex = function() {
+
     var currentImage = document.querySelector('.overlay-gallery-preview img');
     var currentImgSrc = currentImage.getAttribute('src');
     var currentElemNumber = imageAttrArray.indexOf(currentImgSrc);
@@ -100,11 +101,17 @@ var Gallery = function(galleryWrap, popupGallery, imageWrap) {
     if(event.target === galleryBtnPrev) {
       var number = self.getCurrentImageIndex();
       number--;
-      self.showImage(number);
+      if(number < 0) {
+        number = imageAttrArray.length - 1;
+      }
+      self.showImage(number, imageAttrArray[number]);
     } else if (event.target === galleryBtnNext) {
       number = self.getCurrentImageIndex();
       number++;
-      self.showImage(number);
+      if(number + 1 > imageAttrArray.length) {
+        number = 0;
+      }
+      self.showImage(number, imageAttrArray[number]);
     }
   };
 
@@ -126,7 +133,6 @@ var Gallery = function(galleryWrap, popupGallery, imageWrap) {
   this._onCloseClick = function(event) {
     var btnClose = document.querySelector('.overlay-gallery-close');
     if(event.target === btnClose) {
-
       popupGallery.classList.add('invisible');
       popupGalleryImgContainer.lastChild.remove();
       history.pushState(null, null, window.location.pathname);
@@ -150,28 +156,25 @@ var Gallery = function(galleryWrap, popupGallery, imageWrap) {
 
   /**
    * @param  {number} number
+   * @param  {string} hashImg
    */
-  this.showImage = function(number, hash) {
-    if(number + 1 > imageAttrArray.length) {
-      number = 0;
-    } else if(number < 0) {
-      number = imageAttrArray.length - 1;
-    }
-
-    popupGalleryImg.src = hash;
+  this.showImage = function(number, hashImg) {
+    popupGalleryImg.src = hashImg;
     popupGalleryImg.src = imageAttrArray[number];
     popupGalleryCount.innerHTML = number + 1;
     popupGalleryTotal.innerHTML = imageAttrArray.length;
-    location.hash = pathHash + hashGalleryArray[number];
+    console.log(pathHash + hashImg);
+    location.hash = pathHash + hashImg;
   };
 
   /**
    * @param  {number} number
+   * @param  {string} hashImg
    */
-  this.galleryActive = function(number) {
+  this.galleryActive = function(number, hashImg) {
     popupGallery.classList.remove('invisible');
     popupGalleryImgContainer.appendChild(popupGalleryImg);
-    self.showImage(number);
+    self.showImage(number, hashImg);
     self._initListeners();
   };
 
@@ -182,11 +185,8 @@ var Gallery = function(galleryWrap, popupGallery, imageWrap) {
 
     if(hashFound) {
       for (var i = 0; i < imageAttrArray.length; i++) {
-        if(imageAttrArray[i] === hashFound[1]) {
-          popupGallery.classList.remove('invisible');
-          popupGalleryImgContainer.appendChild(popupGalleryImg);
-          self.showImage(i, hashFound[1]);
-          self._initListeners();
+        if(hashFound[1] === imageAttrArray[i]) {
+          self.galleryActive(i, hashFound[1]);
         }
       }
     }
