@@ -7,7 +7,7 @@
  * @param {Array.<Object>} imageWrap
  * @constructor
  */
-var Gallery = function(galleryWrap, popupGallery, imageWrap) {
+var Gallery = function(galleryWrap, popupGallery) {
 
   /**
    * @type {Array.<Object>}
@@ -34,47 +34,22 @@ var Gallery = function(galleryWrap, popupGallery, imageWrap) {
    * @constructor
    */
   var popupGalleryImg = new Image();
-  /**
-   * @type {Array}
-   */
-
-  var hashGalleryArray = [];
-  /**
-   * @type {string}
-   */
-  var pathHash = '#photo/';
-  /**
-   * @type {Object}
-   */
-  var location = window.location;
 
   var self = this;
 
   this.getImageSrc = function() {
     for(var i = 0; i < mainGalleryImageList.length; i++) {
       var getImageAttr = mainGalleryImageList[i].getAttribute('src');
+      mainGalleryImageList[i].dataset.number = true;
       imageAttrArray.push(getImageAttr);
     }
   };
 
-  this.setImageAttr = function() {
-    for(var i = 0; i < imageWrap.length; i++) {
-      imageWrap[i].setAttribute('data-number', i);
-      hashGalleryArray.push('img/screenshots/' + (i + 1) + '.png');
-    }
-  };
-
-  this.getImageNumber = function() {
-
-    var elemClickNumber;
-
+  this.setGalleryClickEvent = function() {
     galleryWrap.addEventListener('click', function(event) {
       event.preventDefault();
-      var currentTarget = event.target;
-      if(this !== currentTarget) {
-        elemClickNumber = Number(currentTarget.parentNode.getAttribute('data-number'));
-        self.galleryActive(elemClickNumber, hashGalleryArray[elemClickNumber]);
-        location.hash = pathHash + hashGalleryArray[elemClickNumber];
+      if(event.target.dataset.number) {
+        self.changeUrl(event.target.getAttribute('src'));
       }
     });
   };
@@ -83,7 +58,6 @@ var Gallery = function(galleryWrap, popupGallery, imageWrap) {
    * @return {number} currentElemNumber
    */
   this.getCurrentImageIndex = function() {
-
     var currentImage = document.querySelector('.overlay-gallery-preview img');
     var currentImgSrc = currentImage.getAttribute('src');
     var currentElemNumber = imageAttrArray.indexOf(currentImgSrc);
@@ -94,24 +68,35 @@ var Gallery = function(galleryWrap, popupGallery, imageWrap) {
   /**
    * @param  {Event} event
    */
-  this._popupGalleryNavBtn = function(event) {
-    var galleryBtnPrev = document.querySelector('.overlay-gallery-control-left');
+  this._popupGalleryBtnNext = function(event) {
     var galleryBtnNext = document.querySelector('.overlay-gallery-control-right');
+    var number = self.getCurrentImageIndex();
 
-    if(event.target === galleryBtnPrev) {
-      var number = self.getCurrentImageIndex();
-      number--;
-      if(number < 0) {
-        number = imageAttrArray.length - 1;
-      }
-      self.showImage(number, imageAttrArray[number]);
-    } else if (event.target === galleryBtnNext) {
+    if (event.target === galleryBtnNext) {
       number = self.getCurrentImageIndex();
       number++;
       if(number + 1 > imageAttrArray.length) {
         number = 0;
       }
-      self.showImage(number, imageAttrArray[number]);
+      self.changeUrl(imageAttrArray[number]);
+      self.showImage(number);
+    }
+  };
+
+  /**
+   * @param  {Event} event
+   */
+  this._popupGalleryBtnPrev = function(event) {
+    var galleryBtnPrev = document.querySelector('.overlay-gallery-control-left');
+    var number = self.getCurrentImageIndex();
+
+    if(event.target === galleryBtnPrev) {
+      number--;
+      if(number < 0) {
+        number = imageAttrArray.length - 1;
+      }
+      self.changeUrl(imageAttrArray[number]);
+      self.showImage(number);
     }
   };
 
@@ -135,67 +120,73 @@ var Gallery = function(galleryWrap, popupGallery, imageWrap) {
     if(event.target === btnClose) {
       popupGallery.classList.add('invisible');
       popupGalleryImgContainer.lastChild.remove();
+      self.changeUrl();
       history.pushState(null, null, window.location.pathname);
       self._removeListeners();
     }
   };
 
   this._initListeners = function() {
-    window.addEventListener('hashchange', self.checkHash);
-    popupGallery.addEventListener('click', self._popupGalleryNavBtn);
+    popupGallery.addEventListener('click', self._popupGalleryBtnNext);
+    popupGallery.addEventListener('click', self._popupGalleryBtnPrev);
     popupGallery.addEventListener('click', self._onCloseClick);
     window.addEventListener('keydown', self._onDocumentKeyDown);
   };
 
   this._removeListeners = function() {
-    window.removeEventListener('hashchange', self.checkHash);
-    popupGallery.removeEventListener('click', self._popupGalleryNavBtn);
+    popupGallery.removeEventListener('click', self._popupGalleryBtnNext);
+    popupGallery.removeEventListener('click', self._popupGalleryBtnPrev);
     popupGallery.removeEventListener('click', self._onCloseClick);
     window.removeEventListener('keydown', self._onDocumentKeyDown);
   };
 
   /**
    * @param  {number} number
-   * @param  {string} hashImg
    */
-  this.showImage = function(number, hashImg) {
-    popupGalleryImg.src = hashImg;
+  this.showImage = function(number) {
     popupGalleryImg.src = imageAttrArray[number];
     popupGalleryCount.innerHTML = number + 1;
     popupGalleryTotal.innerHTML = imageAttrArray.length;
-    console.log(pathHash + hashImg);
-    location.hash = pathHash + hashImg;
+  };
+
+  /**
+   * @param  {string} photoUrl
+   */
+  this.changeUrl = function(photoUrl) {
+    if (photoUrl) {
+      window.location.hash = 'photo/' + photoUrl;
+    } else {
+      history.pushState(null, null, window.location.pathname);
+    }
   };
 
   /**
    * @param  {number} number
-   * @param  {string} hashImg
    */
-  this.galleryActive = function(number, hashImg) {
+  this.galleryActive = function(number) {
     popupGallery.classList.remove('invisible');
     popupGalleryImgContainer.appendChild(popupGalleryImg);
-    self.showImage(number, hashImg);
+    self.showImage(number);
     self._initListeners();
   };
 
   this.checkHash = function() {
-    var currentHash = location.hash;
+    var currentHash = window.location.hash;
     var regular = /#photo\/(\S+)/;
     var hashFound = currentHash.match(regular);
+    var pictureIndex;
 
-    if(hashFound) {
-      for (var i = 0; i < imageAttrArray.length; i++) {
-        if(hashFound[1] === imageAttrArray[i]) {
-          self.galleryActive(i, hashFound[1]);
-        }
-      }
+    if (hashFound) {
+      pictureIndex = imageAttrArray.indexOf(hashFound[1]);
+      self.galleryActive(pictureIndex);
+      self.changeUrl(hashFound[1]);
     }
   };
 
   this.getImageSrc();
-  this.getImageNumber();
-  this.setImageAttr();
   this.checkHash();
+  this.setGalleryClickEvent();
+  window.addEventListener('hashchange', self.checkHash);
 };
 
 module.exports = Gallery;
