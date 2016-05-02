@@ -34,13 +34,22 @@ var Gallery = function(galleryWrap, popupGallery, imageWrap) {
    * @constructor
    */
   var popupGalleryImg = new Image();
+  /**
+   * @type {Array}
+   */
+
+  var hashGalleryArray = [];
+  /**
+   * @type {string}
+   */
+  var pathHash = '#photo/';
+  /**
+   * @type {Object}
+   */
+  var location = window.location;
 
   var self = this;
-// ---- ----- -------- --------
-  var hashGalleryArray = [];
-  var pathHash = '#photo/';
-  var location = window.location;
-// ---- ----- -------- --------
+
   this.getImageSrc = function() {
     for(var i = 0; i < mainGalleryImageList.length; i++) {
       var getImageAttr = mainGalleryImageList[i].getAttribute('src');
@@ -133,7 +142,7 @@ var Gallery = function(galleryWrap, popupGallery, imageWrap) {
   };
 
   this._removeListeners = function() {
-    window.addEventListener('hashchange', self.checkHash);
+    window.removeEventListener('hashchange', self.checkHash);
     popupGallery.removeEventListener('click', self._popupGalleryNavBtn);
     popupGallery.removeEventListener('click', self._onCloseClick);
     window.removeEventListener('keydown', self._onDocumentKeyDown);
@@ -152,6 +161,7 @@ var Gallery = function(galleryWrap, popupGallery, imageWrap) {
     popupGalleryImg.src = imageAttrArray[number];
     popupGalleryCount.innerHTML = number + 1;
     popupGalleryTotal.innerHTML = imageAttrArray.length;
+    location.hash = pathHash + hashGalleryArray[number];
   };
 
   /**
@@ -169,11 +179,14 @@ var Gallery = function(galleryWrap, popupGallery, imageWrap) {
     var regular = /#photo\/(\S+)/;
     var hashFound = currentHash.match(regular);
 
-    for (var i = 0; i < imageAttrArray.length; i++) {
-      if(imageAttrArray[i] === hashFound[1]) {
-        popupGallery.classList.remove('invisible');
-        popupGalleryImgContainer.appendChild(popupGalleryImg);
-        self.showImage(i);
+    if(hashFound) {
+      for (var i = 0; i < imageAttrArray.length; i++) {
+        if(imageAttrArray[i] === hashFound[1]) {
+          popupGallery.classList.remove('invisible');
+          popupGalleryImgContainer.appendChild(popupGalleryImg);
+          self.showImage(i);
+          self._initListeners();
+        }
       }
     }
   };
@@ -181,6 +194,7 @@ var Gallery = function(galleryWrap, popupGallery, imageWrap) {
   this.getImageSrc();
   this.getImageNumber();
   this.setImageAttr();
+  this.checkHash();
 };
 
 module.exports = Gallery;
