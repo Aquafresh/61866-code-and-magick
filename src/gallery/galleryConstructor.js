@@ -35,6 +35,14 @@ var Gallery = function(galleryArea, popupGalleryArea) {
    */
   this.btnClose = this.popupGallery.querySelector('.overlay-gallery-close');
   /**
+   * @type {Element}
+   */
+  this.galleryBtnPrev = this.popupGallery.querySelector('.overlay-gallery-control-left');
+  /**
+   * @type {Element}
+   */
+  this.galleryBtnNext = this.popupGallery.querySelector('.overlay-gallery-control-right');
+  /**
    * @type {Array}
    */
   this.imageAttrArray = [];
@@ -69,7 +77,7 @@ Gallery.prototype.getImageSrc = function() {
 };
 
 /**
- * @return {number} this.currentElemNumber
+ * @return {number} currentElemNumber
  */
 Gallery.prototype.getCurrentImageIndex = function() {
   this.currentImage = this.popupGallery.querySelector('.overlay-gallery-preview img');
@@ -141,10 +149,9 @@ Gallery.prototype._onCloseClick = function(event) {
  * @param  {Event} event
  */
 Gallery.prototype._popupGalleryBtnNext = function(event) {
-  var galleryBtnNext = this.popupGallery.querySelector('.overlay-gallery-control-right');
   var number = this.getCurrentImageIndex();
 
-  if (event.target === galleryBtnNext) {
+  if (event.target === this.galleryBtnNext) {
     number++;
     if(number + 1 > this.imageAttrArray.length) {
       number = 0;
@@ -156,12 +163,12 @@ Gallery.prototype._popupGalleryBtnNext = function(event) {
 
 /**
  * @param  {Event} event
+ * @private
  */
 Gallery.prototype._popupGalleryBtnPrev = function(event) {
-  var galleryBtnPrev = this.popupGallery.querySelector('.overlay-gallery-control-left');
   var number = this.getCurrentImageIndex();
 
-  if(event.target === galleryBtnPrev) {
+  if(event.target === this.galleryBtnPrev) {
     number--;
     if(number < 0) {
       number = this.imageAttrArray.length - 1;
