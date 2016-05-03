@@ -11,14 +11,10 @@ var popupGallery = document.querySelector('.overlay-gallery');
  */
 var mainGallery = document.querySelector('.photogallery');
 /**
- * @type {Array.<Object>}
- */
-var mainGalleryImageWrap = document.querySelectorAll('.photogallery-image');
-/**
  * @type {Object}
  * @constructor
  */
-Gallery = new Gallery(mainGallery, popupGallery, mainGalleryImageWrap);
+Gallery = new Gallery(mainGallery, popupGallery);
 
 
 
