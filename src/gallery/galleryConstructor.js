@@ -5,7 +5,7 @@
  * @param {Element} popupGalleryArea
  * @constructor
  */
-var Gallery = function(galleryArea, popupGalleryArea) {
+function Gallery(galleryArea, popupGalleryArea) {
   /**
    * @type {Object}
    */
@@ -57,15 +57,15 @@ var Gallery = function(galleryArea, popupGalleryArea) {
   this.checkHash();
   this.setGalleryClickListener();
   window.addEventListener('hashchange', this.checkHash);
-};
+}
 
 Gallery.prototype.setFunctionBinder = function() {
   this.checkHash = this.checkHash.bind(this);
   this._onDocumentKeyDown = this._onDocumentKeyDown.bind(this);
   this._onCloseClick = this._onCloseClick.bind(this);
-  this._popupGalleryBtnNext = this._popupGalleryBtnNext.bind(this);
-  this._popupGalleryBtnPrev = this._popupGalleryBtnPrev.bind(this);
-  this.galleryClickEvent = this.galleryClickEvent.bind(this);
+  this._popupGalleryOnBtnNextClick = this._popupGalleryOnBtnNextClick.bind(this);
+  this._popupGalleryOnBtnPrevClick = this._popupGalleryOnBtnPrevClick.bind(this);
+  this.galleryOnClick = this.galleryOnClick.bind(this);
 };
 
 Gallery.prototype.getImageSrc = function() {
@@ -148,7 +148,7 @@ Gallery.prototype._onCloseClick = function(event) {
 /**
  * @param  {Event} event
  */
-Gallery.prototype._popupGalleryBtnNext = function(event) {
+Gallery.prototype._popupGalleryOnBtnNextClick = function(event) {
   var number = this.getCurrentImageIndex();
 
   if (event.target === this.galleryBtnNext) {
@@ -165,7 +165,7 @@ Gallery.prototype._popupGalleryBtnNext = function(event) {
  * @param  {Event} event
  * @private
  */
-Gallery.prototype._popupGalleryBtnPrev = function(event) {
+Gallery.prototype._popupGalleryOnBtnPrevClick = function(event) {
   var number = this.getCurrentImageIndex();
 
   if(event.target === this.galleryBtnPrev) {
@@ -192,8 +192,8 @@ Gallery.prototype.galleryActive = function(number) {
  * @private
  */
 Gallery.prototype._initListeners = function() {
-  this.popupGallery.addEventListener('click', this._popupGalleryBtnNext);
-  this.popupGallery.addEventListener('click', this._popupGalleryBtnPrev);
+  this.popupGallery.addEventListener('click', this._popupGalleryOnBtnNextClick);
+  this.popupGallery.addEventListener('click', this._popupGalleryOnBtnPrevClick);
   this.popupGallery.addEventListener('click', this._onCloseClick);
   window.addEventListener('keydown', this._onDocumentKeyDown);
 };
@@ -202,17 +202,17 @@ Gallery.prototype._initListeners = function() {
  * @private
  */
 Gallery.prototype._removeListeners = function() {
-  this.popupGallery.removeEventListener('click', self._popupGalleryBtnNext);
-  this.popupGallery.removeEventListener('click', self._popupGalleryBtnPrev);
-  this.popupGallery.removeEventListener('click', self._onCloseClick);
-  window.removeEventListener('keydown', self._onDocumentKeyDown);
+  this.popupGallery.removeEventListener('click', this._popupGalleryOnBtnNextClick);
+  this.popupGallery.removeEventListener('click', this._popupGalleryOnBtnPrevClick);
+  this.popupGallery.removeEventListener('click', this._onCloseClick);
+  window.removeEventListener('keydown', this._onDocumentKeyDown);
 };
 
 Gallery.prototype.setGalleryClickListener = function() {
-  this.galleryWrap.addEventListener('click', this.galleryClickEvent);
+  this.galleryWrap.addEventListener('click', this.galleryOnClick);
 };
 
-Gallery.prototype.galleryClickEvent = function() {
+Gallery.prototype.galleryOnClick = function() {
   event.preventDefault();
   if(event.target.dataset.number) {
     this.changeUrl(event.target.getAttribute('src'));

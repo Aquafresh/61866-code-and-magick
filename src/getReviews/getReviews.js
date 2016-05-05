@@ -9,7 +9,7 @@ var reviewsFilter = document.querySelector('.reviews-filter');
 /**
  * @param  {Function} callback
  */
-var getReviews = function(callback) {
+function getReviews(callback) {
   var xhr = new XMLHttpRequest();
   xhr.onload = function(e) {
     var xhrRequestObj = e.target;
@@ -35,6 +35,6 @@ var getReviews = function(callback) {
     document.querySelector('.reviews').classList.add('reviews-list-loading');
     reviewsFilter.classList.add('invisible');
   }
-};
+}
 
 module.exports = getReviews;

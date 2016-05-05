@@ -58,7 +58,7 @@ var setFilterEvent = function() {
  * @param {string} filter
  * @return {Array.<Object>} getReviewsArrCopy
  */
-var setFiltredActive = function(filter) {
+function setFiltredActive(filter) {
 
   var getReviewsArrCopy = getReviewsArr.slice(0);
   var temporaryArr;
@@ -105,24 +105,24 @@ var setFiltredActive = function(filter) {
   }
 
   return getReviewsArrCopy;
-};
+}
 
 /**
  * @param {string} filter
  * @param {Array.<Object>}
  */
-var setFilterActive = function(filter) {
+function setFilterActive(filter) {
   pageNumber = 0;
   filteredReviews = setFiltredActive(filter);
   renderReviews(filteredReviews, pageNumber, true);
-};
+}
 
 /**
  * @param {number} page
  * @param {boolean} replace
  * @param {Array.<Object>} reviews
  */
-var renderReviews = function(reviews, page, replace) {
+function renderReviews(reviews, page, replace) {
   if(replace) {
     renderedReview.forEach(function(reviewElement) {
       reviewElement.remove();
@@ -135,9 +135,9 @@ var renderReviews = function(reviews, page, replace) {
   reviews.slice(from, to).forEach(function(data) {
     renderedReview.push(new Reviews(data, reviewsContainer));
   });
-};
+}
 
-var getMoreReviews = function() {
+function getMoreReviews() {
   btnMoreReviews.addEventListener('click', function() {
     pageNumber++;
     renderReviews(filteredReviews, pageNumber);
@@ -152,7 +152,7 @@ var getMoreReviews = function() {
       btnMoreReviews.classList.add('invisible');
     }
   });
-};
+}
 
 /**
  * @param  {Array.<Object>} loadedReviews
