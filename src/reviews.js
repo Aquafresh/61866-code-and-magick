@@ -1,7 +1,7 @@
 'use strict';
 
 var getReviews = require('./getReviews/getReviews');
-var Reviews = require('./getReviews/reviewsConstructor');
+var Reviews = require('./getReviews/constructorReviews');
 
 /**
  * Reviews html containter
